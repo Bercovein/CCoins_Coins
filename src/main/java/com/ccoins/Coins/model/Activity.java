@@ -10,7 +10,6 @@ import java.time.LocalDateTime;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Builder
 public class Activity {
     private Long id;
     private String name;
