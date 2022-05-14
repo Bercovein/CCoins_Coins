@@ -1,7 +1,6 @@
 package com.ccoins.Coins.model;
 
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -10,12 +9,14 @@ import java.time.LocalDateTime;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Builder
-public class Coins {
+public class Game {
     private Long id;
-    private LocalDateTime dateTime;
-    private Long quantity;
+    private String name;
+    private String rules;
+    private Long points;
+    private LocalDateTime startDate;
+    private LocalDateTime endDate;
     private boolean active;
-    private Long client;
-    private Match match;
+    private Long bar;
+    private GameType gameType;
 }
