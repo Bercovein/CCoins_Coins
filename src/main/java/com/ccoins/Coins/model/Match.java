@@ -17,5 +17,5 @@ public class Match {
     private LocalDateTime startDate;
     private LocalDateTime endDate;
     private boolean active;
-    private Game game;
+    private Long game;
 }
