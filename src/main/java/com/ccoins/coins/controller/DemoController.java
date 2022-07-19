@@ -1,4 +1,4 @@
-package com.ccoins.Coins.controller;
+package com.ccoins.coins.controller;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
