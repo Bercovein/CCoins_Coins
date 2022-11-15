@@ -1,0 +1,14 @@
+@startuml
+class CoinsController {
+}
+class CoinsService {
+}
+interface ICoinsService {
+}
+interface ICoinsRepository {
+}
+
+
+ICoinsService <|.. CoinsService
+JpaRepository <|-- ICoinsRepository
+@enduml
