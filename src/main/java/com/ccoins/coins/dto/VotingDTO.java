@@ -1,16 +1,20 @@
-package com.ccoins.coins.model;
+package com.ccoins.coins.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class Votation {
+public class VotingDTO {
     private Long id;
-    private Song winnerSong;
-    private Match match;
+    private SongDTO winnerSong;
+    private List<SongDTO> songs;
+    private MatchDTO match;
+
 }
