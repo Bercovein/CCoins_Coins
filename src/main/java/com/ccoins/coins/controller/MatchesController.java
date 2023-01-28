@@ -24,4 +24,9 @@ public class MatchesController {
     public VotingDTO saveOrUpdateVoting(@RequestBody VotingDTO request){
         return this.service.saveOrUpdateVoting(request);
     }
+
+    @GetMapping("/voting/song/{songId}")
+    public VotingDTO getVotingBySong(@PathVariable("songId") Long songId){
+        return this.service.getVotingBySong(songId);
+    }
 }

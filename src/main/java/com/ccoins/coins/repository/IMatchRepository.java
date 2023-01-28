@@ -21,4 +21,13 @@ public interface IMatchRepository extends JpaRepository<Match, Long> {
     Match getVotingMatchByBarId(@Param("id") Long id);
 
     Match getByGame(Long game);
+
+    @Query(value = "select m.*, g.*, gt.*, b.* from matches m " +
+            "inner join votations v on v.FK_MATCH = m.ID " +
+            "inner join songs s on s.FK_VOTATION = v.ID " +
+            "inner join games g on g.ID = m.FK_GAME  " +
+            "inner join games_types gt on gt.id = g.FK_GAME_TYPE  " +
+            "inner join bars b on b.ID = g.FK_BAR " +
+            "where s.ID = :songId", nativeQuery = true)
+    Match getMatchBySongId(@Param("songId")Long songId);
 }
