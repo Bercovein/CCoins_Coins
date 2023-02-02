@@ -24,6 +24,9 @@ public class Song {
     @Column(name="name")
     private String name;
 
+    @Column(name = "uri")
+    private String uri;
+
     @ManyToOne
     @JoinColumn(name="fk_votation")
     @JsonIgnoreProperties({"songs", "winnerSong"})

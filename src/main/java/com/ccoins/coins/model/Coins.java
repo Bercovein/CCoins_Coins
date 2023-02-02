@@ -33,11 +33,8 @@ public class Coins {
     @Column(name="active", columnDefinition = "boolean default true")
     private boolean active;
 
-    @Column(name="fk_client")
-    private Long client;
-
-    @Column(name="fk_party")
-    private Long party;
+    @Column(name="fk_client_party")
+    private Long clientParty;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "fk_match", referencedColumnName = "id")

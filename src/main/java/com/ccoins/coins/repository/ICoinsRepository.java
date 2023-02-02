@@ -8,6 +8,8 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface ICoinsRepository extends JpaRepository<Coins, Long> {
-    @Query(value = "SELECT IFNULL(SUM(c.quantity),0) FROM coins c where c.fk_party = :id", nativeQuery = true)
+    @Query(value = "SELECT IFNULL(SUM(c.quantity),0) FROM coins c" +
+            " inner join clients_parties cp on c.fk_client_party = cp.fk_client" +
+            " where cp.fk_party = :id", nativeQuery = true)
     Long sumQuantityByParty(Long id);
 }

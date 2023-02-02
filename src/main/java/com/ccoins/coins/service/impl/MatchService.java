@@ -16,6 +16,7 @@ import com.ccoins.coins.utils.DateUtils;
 import com.ccoins.coins.utils.MapperUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -91,6 +92,11 @@ public class MatchService implements IMatchService {
         }else{
             throw new ForbiddenException(ALREADY_VOTED_ERROR_CODE, ALREADY_VOTED_ERROR);
         }
+    }
+
+    @Override
+    public ResponseEntity<List<Long>> getClientsIdWhoVotedSong(Long songId) {
+        return ResponseEntity.ok(this.voteRepository.findClientIdByVotedSong(songId));
     }
 
 }

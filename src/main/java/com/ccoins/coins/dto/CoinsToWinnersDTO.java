@@ -5,14 +5,15 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-@Data
-@AllArgsConstructor
-@NoArgsConstructor
-@Builder
-public class SongDTO {
+import java.util.List;
 
-    private Long id;
-    private String name;
-    private Long votes;
-    private String uri;
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
+public class CoinsToWinnersDTO {
+
+    private Long matchId;
+    private Long quantity;
+    private List<Long> clients;
 }

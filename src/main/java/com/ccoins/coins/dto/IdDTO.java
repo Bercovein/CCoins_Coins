@@ -9,10 +9,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class SongDTO {
+public class IdDTO {
 
     private Long id;
-    private String name;
-    private Long votes;
-    private String uri;
 }
