@@ -6,6 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/coins")
 public class CoinsController {
@@ -24,7 +26,7 @@ public class CoinsController {
     }
 
     @PostMapping("/clients/match")
-    public void giveCoinsToClients(@RequestBody CoinsToWinnersDTO request){
-        this.service.giveCoinsToClients(request);
+    public ResponseEntity<List<Long>> giveCoinsToClients(@RequestBody CoinsToWinnersDTO request){
+        return ResponseEntity.ok(this.service.giveCoinsToClients(request));
     }
 }

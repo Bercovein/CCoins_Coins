@@ -13,6 +13,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 
 @Service
@@ -40,9 +42,10 @@ public class CoinsService implements ICoinsService {
     }
 
     @Override
-    public void giveCoinsToClients(CoinsToWinnersDTO request) {
+    public List<Long> giveCoinsToClients(CoinsToWinnersDTO request) {
 
         Match match = matchRepository.getById(request.getMatchId());
+        List<Long> response = new ArrayList<>();
 
         request.getClients().forEach(client -> {
             Coins coins = Coins.builder()
@@ -54,7 +57,10 @@ public class CoinsService implements ICoinsService {
                     .build();
             try{
                 this.coinsRepository.save(coins);
+                response.add(client);
             }catch (Exception ignored){}
         });
+
+        return response;
     }
 }
