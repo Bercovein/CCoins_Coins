@@ -36,6 +36,9 @@ public class Coins {
     @Column(name="fk_client_party")
     private Long clientParty;
 
+    @Column(name="fk_prize")
+    private Long prize;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "fk_match", referencedColumnName = "id")
     private Match match;

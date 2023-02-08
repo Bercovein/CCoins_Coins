@@ -12,4 +12,6 @@ public interface ICoinsRepository extends JpaRepository<Coins, Long> {
             " inner join clients_parties cp on c.fk_client_party = cp.fk_client" +
             " where cp.fk_party = :id", nativeQuery = true)
     Long sumQuantityByParty(Long id);
+
+
 }

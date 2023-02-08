@@ -142,4 +142,11 @@ public class ExceptionConstant {
     public static final String ALREADY_VOTED_ERROR_CODE = "0040";
     public static final String ALREADY_VOTED_ERROR = "User already vote on this match";
 
+    public static final String NO_ENOUGH_COINS_ERROR_CODE = "0041";
+    public static final String NO_ENOUGH_COINS_ERROR = "No enough coins to buy prize.";
+
+    public static final String SAVE_COINS_ERROR_CODE = "0042";
+    public static final String SAVE_COINS_ERROR = "Error trying to buy prize, retry later.";
+
+
 }
