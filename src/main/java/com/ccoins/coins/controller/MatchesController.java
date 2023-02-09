@@ -15,7 +15,7 @@ public class MatchesController {
     private IMatchService service;
 
     @GetMapping("/voting/bar/{id}")
-    public VotingDTO getActualVotingByGame(@PathVariable Long id){
+    public VotingDTO getActualVotingByBar(@PathVariable Long id){
         return this.service.getActualVotingByBarId(id);
     }
 
