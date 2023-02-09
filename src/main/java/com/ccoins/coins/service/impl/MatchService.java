@@ -64,6 +64,7 @@ public class MatchService implements IMatchService {
         Match match = MapperUtils.map(request.getMatch(), Match.class);
         match = this.matchRepository.save(match);
         Voting voting = MapperUtils.map(request, Voting.class);
+        voting.setWinnerSong(MapperUtils.map(request.getWinnerSong(), Song.class));
         voting.setMatch(match);
         voting = this.votingRepository.save(voting);
 
