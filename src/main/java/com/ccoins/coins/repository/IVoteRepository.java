@@ -17,7 +17,7 @@ public interface IVoteRepository extends JpaRepository<Vote, Long> {
 
     Optional<List<Vote>> getByClientAndSongVotingId(Long client, Long id);
 
-    @Query(value = "SELECT v.fk_client from Votes v " +
+    @Query(value = "SELECT v.fk_client from votes v " +
             " where v.fk_song = :songId group by v.fk_client", nativeQuery = true)
     List<Long> findClientIdByVotedSong(@Param("songId") Long songId);
 }
