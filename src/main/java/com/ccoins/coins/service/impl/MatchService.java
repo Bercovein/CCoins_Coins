@@ -51,7 +51,7 @@ public class MatchService implements IMatchService {
         Optional<Voting> votingOpt = this.votingRepository.getByBarAndWinnerSongIsNull(id);
         VotingDTO response = null;
         if(votingOpt.isPresent()) {
-            response = (VotingDTO) MapperUtils.map(votingOpt, VotingDTO.class);
+            response = MapperUtils.map(votingOpt, VotingDTO.class);
             response.getSongs().forEach(s -> s.setVotes(this.voteRepository.countBySongId(s.getId())));
         }
         return response;
@@ -60,21 +60,19 @@ public class MatchService implements IMatchService {
     @Override
     public VotingDTO saveOrUpdateVoting(VotingDTO request) {
 
-        Voting voting = (Voting) MapperUtils.map(request, Voting.class);
+        Match match = MapperUtils.map(request.getMatch(), Match.class);
+        match = this.matchRepository.save(match);
+        Voting voting = MapperUtils.map(request, Voting.class);
+        voting.setMatch(match);
         voting = this.votingRepository.save(voting);
-        Match match = (Match) MapperUtils.map(request.getMatch(), Match.class);
-        this.matchRepository.save(match);
-
-        VotingDTO response = (VotingDTO) MapperUtils.map(voting, VotingDTO.class);
-
-        return response;
+        return MapperUtils.map(voting, VotingDTO.class);
     }
 
     @Override
     public VotingDTO getVotingBySong(Long songId) {
 
         Song song = this.songRepository.getById(songId);
-        return (VotingDTO) MapperUtils.map(song.getVoting(), VotingDTO.class);
+        return MapperUtils.map(song.getVoting(), VotingDTO.class);
     }
 
     @Override
