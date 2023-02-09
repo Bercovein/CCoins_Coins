@@ -21,9 +21,6 @@ public class Match {
     @Column(name="id")
     private Long id;
 
-    @Column(name="code")
-    private String code;
-
     @Column(name="start_date",insertable = false, updatable = false,
             columnDefinition = AUTO_DATE)
     private LocalDateTime startDate;
