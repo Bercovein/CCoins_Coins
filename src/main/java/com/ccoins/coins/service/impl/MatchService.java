@@ -1,5 +1,6 @@
 package com.ccoins.coins.service.impl;
 
+import com.ccoins.coins.dto.SongDTO;
 import com.ccoins.coins.dto.VoteDTO;
 import com.ccoins.coins.dto.VotingDTO;
 import com.ccoins.coins.exceptions.ForbiddenException;
@@ -65,7 +66,17 @@ public class MatchService implements IMatchService {
         Voting voting = MapperUtils.map(request, Voting.class);
         voting.setMatch(match);
         voting = this.votingRepository.save(voting);
-        return MapperUtils.map(voting, VotingDTO.class);
+
+        VotingDTO response = MapperUtils.map(voting, VotingDTO.class);
+        Voting finalVoting = voting;
+        request.getSongs().forEach(songDTO -> {
+            Song song = MapperUtils.map(songDTO, Song.class);
+            song.setVoting(finalVoting);
+            song = this.songRepository.save(song);
+            response.getSongs().add(MapperUtils.map(song, SongDTO.class));
+        });
+
+        return response;
     }
 
     @Override

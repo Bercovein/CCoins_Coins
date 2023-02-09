@@ -12,7 +12,6 @@ import java.time.LocalDateTime;
 public class MatchDTO {
 
     private Long id;
-    private String code;
     private LocalDateTime startDate;
     private LocalDateTime endDate;
     private boolean active;
