@@ -19,6 +19,7 @@ public interface IVotingRepository extends JpaRepository<Voting, Long> {
             "inner join games_types gt on gt.id = g.FK_GAME_TYPE " +
             "inner join bars b on b.ID = g.FK_BAR " +
             "where b.id = :id " +
-            "and v.FK_WINNER_SONG is null", nativeQuery = true)
+            "and v.FK_WINNER_SONG is null " +
+            "and m.end_date is null", nativeQuery = true)
     Optional<Voting> getByBarAndWinnerSongIsNull(@Param("id") Long id);
 }
