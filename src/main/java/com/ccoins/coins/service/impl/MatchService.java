@@ -59,7 +59,7 @@ public class MatchService implements IMatchService {
     }
 
     @Override
-    public VotingDTO saveOrUpdateVoting(VotingDTO request) {
+    public VotingDTO saveVoting(VotingDTO request) {
 
         Match match = MapperUtils.map(request.getMatch(), Match.class);
         match = this.matchRepository.save(match);
@@ -78,6 +78,19 @@ public class MatchService implements IMatchService {
         });
 
         return response;
+    }
+
+    @Override
+    public VotingDTO updateVoting(VotingDTO request) {
+
+        Match match = MapperUtils.map(request.getMatch(), Match.class);
+        match = this.matchRepository.save(match);
+        Voting voting = MapperUtils.map(request, Voting.class);
+        voting.setWinnerSong(MapperUtils.map(request.getWinnerSong(), Song.class));
+        voting.setMatch(match);
+        voting = this.votingRepository.save(voting);
+
+        return MapperUtils.map(voting, VotingDTO.class);
     }
 
     @Override

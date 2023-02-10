@@ -21,8 +21,14 @@ public class MatchesController {
 
     @PostMapping("/voting")
     @ResponseStatus(OK)
-    public VotingDTO saveOrUpdateVoting(@RequestBody VotingDTO request){
-        return this.service.saveOrUpdateVoting(request);
+    public VotingDTO saveVoting(@RequestBody VotingDTO request){
+        return this.service.saveVoting(request);
+    }
+
+    @PutMapping("/voting")
+    @ResponseStatus(OK)
+    public VotingDTO updateVoting(@RequestBody VotingDTO request){
+        return this.service.updateVoting(request);
     }
 
     @GetMapping("/voting/song/{songId}")

@@ -10,7 +10,10 @@ public interface IMatchService {
 
     VotingDTO getActualVotingByBarId(Long id);
 
-    VotingDTO saveOrUpdateVoting(VotingDTO request);
+
+    VotingDTO saveVoting(VotingDTO request);
+
+    VotingDTO updateVoting(VotingDTO request);
 
     VotingDTO getVotingBySong(Long songId);
 
