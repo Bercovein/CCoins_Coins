@@ -9,7 +9,7 @@ public class DateUtils {
     public static final String HH_MM = "HH:mm";
 
     public static final String DDMMYYYY_HHMM = "DD/MM/YYYY HH:mm";
-
+    public static final String YYYYMMDD_HHMMSS = "yyyy-MM-DD HH:mm:ss";
     public static LocalDateTime now(){
         return LocalDateTime.now();
     }

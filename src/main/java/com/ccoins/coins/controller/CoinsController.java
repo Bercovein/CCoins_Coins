@@ -1,5 +1,6 @@
 package com.ccoins.coins.controller;
 
+import com.ccoins.coins.dto.CoinsReportDTO;
 import com.ccoins.coins.dto.CoinsToWinnersDTO;
 import com.ccoins.coins.dto.ResponseDTO;
 import com.ccoins.coins.dto.SpendCoinsRqDTO;
@@ -23,7 +24,7 @@ public class CoinsController {
         this.service = service;
     }
 
-    @GetMapping("/party/{id}")
+    @GetMapping("/party/{id}/count")
     public ResponseEntity<Long> countByParty(@PathVariable Long id){
 
         return ResponseEntity.ok(this.service.countByParty(id));
@@ -38,5 +39,11 @@ public class CoinsController {
     @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<ResponseDTO> spendCoinsInPrizeByParty(@RequestBody @Valid SpendCoinsRqDTO request){
         return this.service.spendCoinsInPrizeByParty(request);
+    }
+
+    @GetMapping("/party/{id}")
+    public ResponseEntity<CoinsReportDTO> getAllCoinsFromParty(@PathVariable Long id){
+
+        return this.service.getAllCoinsFromParty(id);
     }
 }

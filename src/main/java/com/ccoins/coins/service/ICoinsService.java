@@ -1,5 +1,6 @@
 package com.ccoins.coins.service;
 
+import com.ccoins.coins.dto.CoinsReportDTO;
 import com.ccoins.coins.dto.CoinsToWinnersDTO;
 import com.ccoins.coins.dto.ResponseDTO;
 import com.ccoins.coins.dto.SpendCoinsRqDTO;
@@ -16,4 +17,6 @@ public interface ICoinsService {
 
     @Transactional
     ResponseEntity<ResponseDTO> spendCoinsInPrizeByParty(SpendCoinsRqDTO request);
+
+    ResponseEntity<CoinsReportDTO> getAllCoinsFromParty(Long id);
 }

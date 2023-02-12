@@ -1,12 +1,15 @@
 package com.ccoins.coins.service.impl;
 
+import com.ccoins.coins.dto.CoinsReportDTO;
 import com.ccoins.coins.dto.CoinsToWinnersDTO;
 import com.ccoins.coins.dto.ResponseDTO;
 import com.ccoins.coins.dto.SpendCoinsRqDTO;
 import com.ccoins.coins.exceptions.BadRequestException;
 import com.ccoins.coins.exceptions.constant.ExceptionConstant;
 import com.ccoins.coins.model.Coins;
+import com.ccoins.coins.model.CoinsReport;
 import com.ccoins.coins.model.Match;
+import com.ccoins.coins.repository.ICoinsReportRepository;
 import com.ccoins.coins.repository.ICoinsRepository;
 import com.ccoins.coins.repository.IMatchRepository;
 import com.ccoins.coins.service.ICoinsService;
@@ -27,11 +30,13 @@ import java.util.List;
 public class CoinsService implements ICoinsService {
 
     private final ICoinsRepository coinsRepository;
+    private final ICoinsReportRepository coinsReportRepository;
     private final IMatchRepository matchRepository;
 
     @Autowired
-    public CoinsService(ICoinsRepository coinsRepository, IMatchRepository matchRepository) {
+    public CoinsService(ICoinsRepository coinsRepository, ICoinsReportRepository coinsReportRepository, IMatchRepository matchRepository) {
         this.coinsRepository = coinsRepository;
+        this.coinsReportRepository = coinsReportRepository;
         this.matchRepository = matchRepository;
     }
 
@@ -99,5 +104,24 @@ public class CoinsService implements ICoinsService {
         }
         return ResponseEntity.ok(ResponseDTO.builder().code("0")
                 .message("Successful purchase. Congratulations!").build());
+    }
+
+    @Override
+    public ResponseEntity<CoinsReportDTO> getAllCoinsFromParty(Long id) {
+
+        CoinsReportDTO response = new CoinsReportDTO();
+        List<CoinsReport> report = new ArrayList<>();
+        Long quantity = this.countByParty(id);
+
+        response.setTotalCoins(quantity);
+
+        try {
+            report = this.coinsReportRepository.getAllCoinsFromParty(id);
+        }catch (Exception ignored){}
+
+        response.setReport(report);
+
+        return ResponseEntity.ok(response);
+
     }
 }
