@@ -1,16 +1,16 @@
 package com.ccoins.coins.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import lombok.*;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
 
 import static com.ccoins.coins.utils.DateUtils.AUTO_DATE;
 
-@Data
+@Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
@@ -27,8 +27,10 @@ public class Vote {
             columnDefinition = AUTO_DATE)
     private LocalDateTime dateTime;
 
-    @OneToOne
+    @ManyToOne(fetch=FetchType.LAZY)
     @JoinColumn(name = "fk_song")
+    @JsonIgnoreProperties({"votes"})
+    @JsonBackReference
     private Song song;
 
     @Column(name = "fk_client")

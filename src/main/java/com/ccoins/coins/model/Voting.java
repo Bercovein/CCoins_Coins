@@ -1,15 +1,14 @@
 package com.ccoins.coins.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import lombok.*;
 
 import javax.persistence.*;
 import java.util.List;
 
-@Data
+@Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
@@ -31,7 +30,9 @@ public class Voting {
     @JoinColumn(name = "fk_match", referencedColumnName = "id")
     private Match match;
 
-    @OneToMany(mappedBy="voting")
+    @OneToMany(fetch=FetchType.LAZY, cascade = CascadeType.ALL, mappedBy="voting")
+    @JsonIgnoreProperties({"voting"})
+    @JsonManagedReference
     private List<Song> songs;
 
 }

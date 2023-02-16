@@ -13,7 +13,9 @@ import java.util.Optional;
 @Repository
 public interface IVoteRepository extends JpaRepository<Vote, Long> {
 
-    Long countBySongId(@Param("id") Long id);
+    @Query(value = "SELECT COUNT(v.id) FROM votes v " +
+            " WHERE v.fk_song = :id", nativeQuery = true)
+    Integer countBySongId(@Param("id") Long id);
 
     Optional<List<Vote>> getByClientAndSongVotingId(Long client, Long id);
 
