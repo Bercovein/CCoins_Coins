@@ -20,4 +20,6 @@ public interface IMatchService {
     void voteSong(VoteDTO request);
 
     ResponseEntity<List<Long>> getClientsIdWhoVotedSong(Long songId);
+
+    boolean hasVotedAlready(String userIp, Long barId);
 }

@@ -27,4 +27,9 @@ public class VoteController {
     public ResponseEntity<List<Long>> getClientsIdWhoVotedSong(@PathVariable("songId") Long songId){
         return this.service.getClientsIdWhoVotedSong(songId);
     }
+
+    @GetMapping("/client/{userIp}/bar/{barId}")
+    boolean hasVotedAlready(@PathVariable("userIp") String userIp, @PathVariable("barId")  Long barId){
+        return this.service.hasVotedAlready(userIp,barId);
+    }
 }

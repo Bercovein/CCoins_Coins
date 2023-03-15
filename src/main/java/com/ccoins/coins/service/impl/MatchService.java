@@ -1,5 +1,6 @@
 package com.ccoins.coins.service.impl;
 
+import com.ccoins.coins.dto.MatchDTO;
 import com.ccoins.coins.dto.SongDTO;
 import com.ccoins.coins.dto.VoteDTO;
 import com.ccoins.coins.dto.VotingDTO;
@@ -70,21 +71,37 @@ public class MatchService implements IMatchService {
     @Override
     public VotingDTO saveVoting(VotingDTO request) {
 
+        //deberia guardar la votación, con sus canciones y el match
         Match match = MapperUtils.map(request.getMatch(), Match.class);
+        match.setStartDate(DateUtils.now());
         match = this.matchRepository.save(match);
-        Voting voting = MapperUtils.map(request, Voting.class);
-        voting.setWinnerSong(MapperUtils.map(request.getWinnerSong(), Song.class));
-        voting.setMatch(match);
-        voting = this.votingRepository.save(voting);
 
-        VotingDTO response = MapperUtils.map(voting, VotingDTO.class);
-        Voting finalVoting = voting;
+        List<Song> songs = new ArrayList<>();
+
         request.getSongs().forEach(songDTO -> {
             Song song = MapperUtils.map(songDTO, Song.class);
-            song.setVoting(finalVoting);
-            song = this.songRepository.save(song);
-            response.getSongs().add(MapperUtils.map(song, SongDTO.class));
+            songs.add(song);
         });
+
+        Voting voting = Voting.builder().match(match).winnerSong(null).build();
+
+        voting = this.votingRepository.save(voting);
+
+        List<SongDTO> songDTOList = new ArrayList<>();
+
+        Voting finalVoting = voting;
+        songs.forEach(s -> {
+            s.setVoting(finalVoting);
+            s = this.songRepository.save(s);
+            songDTOList.add(SongDTO.builder().id(s.getId()).name(s.getName()).uri(s.getUri()).votes(0L).build());
+        });
+
+        VotingDTO response = VotingDTO.builder()
+                .id(voting.getId())
+                .match(MapperUtils.map(match, MatchDTO.class))
+                .songs(songDTOList)
+                .winnerSong(null)
+                .build();
 
         return response;
     }
@@ -129,6 +146,12 @@ public class MatchService implements IMatchService {
     @Override
     public ResponseEntity<List<Long>> getClientsIdWhoVotedSong(Long songId) {
         return ResponseEntity.ok(this.voteRepository.findClientIdByVotedSong(songId));
+    }
+
+    @Override
+    public boolean hasVotedAlready(String userIp, Long barId) {
+
+        return this.voteRepository.hasVotedAlready(userIp, barId);
     }
 
 }
