@@ -24,4 +24,10 @@ public interface IVotingRepository extends JpaRepository<Voting, Long> {
             "order by v.id desc " +
             "limit 1", nativeQuery = true)
     Optional<Voting> getByBarAndWinnerSongIsNull(@Param("id") Long id);
+
+    @Query(value = "select v.*, m.* from votations v " +
+            " inner join songs s on s.fk_votation = v.id" +
+            " inner join matches m on m.id = v.fk_match" +
+            " where s.id = :id", nativeQuery = true)
+    Optional<Voting> findBySongId(@Param("id") Long songId);
 }

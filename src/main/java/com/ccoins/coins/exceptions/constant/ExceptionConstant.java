@@ -148,5 +148,8 @@ public class ExceptionConstant {
     public static final String SAVE_COINS_ERROR_CODE = "0042";
     public static final String SAVE_COINS_ERROR = "Error trying to buy prize, retry later.";
 
+    public static final String SONG_NOT_FOUND_ERROR_CODE = "0043";
+    public static final String SONG_NOT_FOUND_ERROR = "Error trying to find a song.";
+
 
 }

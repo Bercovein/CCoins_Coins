@@ -26,8 +26,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import static com.ccoins.coins.exceptions.constant.ExceptionConstant.ALREADY_VOTED_ERROR;
-import static com.ccoins.coins.exceptions.constant.ExceptionConstant.ALREADY_VOTED_ERROR_CODE;
+import static com.ccoins.coins.exceptions.constant.ExceptionConstant.*;
 
 
 @Service
@@ -122,8 +121,30 @@ public class MatchService implements IMatchService {
     @Override
     public VotingDTO getVotingBySong(Long songId) {
 
-        Song song = this.songRepository.getById(songId);
-        return MapperUtils.map(song.getVoting(), VotingDTO.class);
+        Optional<Voting> votingOpt = this.votingRepository.findBySongId(songId);
+
+        if(votingOpt.isEmpty()){
+            throw new ForbiddenException(SONG_NOT_FOUND_ERROR_CODE, SONG_NOT_FOUND_ERROR);
+        }
+
+        Voting voting = votingOpt.get();
+        SongDTO winnerSong = null;
+
+        if(voting.getWinnerSong() != null){
+
+            winnerSong = SongDTO.convert(voting.getWinnerSong());
+        }
+
+        List<SongDTO> list = new ArrayList<>();
+
+        voting.getSongs().forEach(s -> list.add(SongDTO.convert(s)));
+
+        return VotingDTO.builder()
+                .id(voting.getId())
+                .winnerSong(winnerSong)
+                .match(MapperUtils.map(voting.getMatch(), MatchDTO.class))
+                .songs(list)
+                .build();
     }
 
     @Override

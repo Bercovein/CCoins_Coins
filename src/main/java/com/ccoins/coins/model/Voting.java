@@ -26,7 +26,7 @@ public class Voting {
     @JsonIgnoreProperties("voting")
     private Song winnerSong;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "fk_match", referencedColumnName = "id")
     private Match match;
 
