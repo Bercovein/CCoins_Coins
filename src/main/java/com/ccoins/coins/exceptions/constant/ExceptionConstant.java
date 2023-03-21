@@ -151,5 +151,8 @@ public class ExceptionConstant {
     public static final String SONG_NOT_FOUND_ERROR_CODE = "0043";
     public static final String SONG_NOT_FOUND_ERROR = "Error trying to find a song.";
 
+    public static final String COINS_REPORT_ERROR_CODE = "0044";
+    public static final String COINS_REPORT_ERROR = "Error trying to get coins report";
+
 
 }

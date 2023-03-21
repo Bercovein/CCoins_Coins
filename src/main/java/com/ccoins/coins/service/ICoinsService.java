@@ -4,6 +4,7 @@ import com.ccoins.coins.dto.CoinsReportDTO;
 import com.ccoins.coins.dto.CoinsToWinnersDTO;
 import com.ccoins.coins.dto.ResponseDTO;
 import com.ccoins.coins.dto.SpendCoinsRqDTO;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -18,5 +19,5 @@ public interface ICoinsService {
     @Transactional
     ResponseEntity<ResponseDTO> spendCoinsInPrizeByParty(SpendCoinsRqDTO request);
 
-    ResponseEntity<CoinsReportDTO> getAllCoinsFromParty(Long id);
+    ResponseEntity<CoinsReportDTO> getAllCoinsFromParty(Long id, Pageable pagination);
 }

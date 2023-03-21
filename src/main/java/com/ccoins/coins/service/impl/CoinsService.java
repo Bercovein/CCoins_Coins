@@ -14,8 +14,10 @@ import com.ccoins.coins.repository.ICoinsRepository;
 import com.ccoins.coins.repository.IMatchRepository;
 import com.ccoins.coins.service.ICoinsService;
 import com.ccoins.coins.utils.DateUtils;
+import com.ccoins.coins.utils.PaginateUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -32,12 +34,13 @@ public class CoinsService implements ICoinsService {
     private final ICoinsRepository coinsRepository;
     private final ICoinsReportRepository coinsReportRepository;
     private final IMatchRepository matchRepository;
-
+    private final PaginateUtils pagination;
     @Autowired
-    public CoinsService(ICoinsRepository coinsRepository, ICoinsReportRepository coinsReportRepository, IMatchRepository matchRepository) {
+    public CoinsService(ICoinsRepository coinsRepository, ICoinsReportRepository coinsReportRepository, IMatchRepository matchRepository, PaginateUtils pagination) {
         this.coinsRepository = coinsRepository;
         this.coinsReportRepository = coinsReportRepository;
         this.matchRepository = matchRepository;
+        this.pagination = pagination;
     }
 
 
@@ -107,19 +110,21 @@ public class CoinsService implements ICoinsService {
     }
 
     @Override
-    public ResponseEntity<CoinsReportDTO> getAllCoinsFromParty(Long id) {
+    public ResponseEntity<CoinsReportDTO> getAllCoinsFromParty(Long id, Pageable pagination) {
 
-        CoinsReportDTO response = new CoinsReportDTO();
         List<CoinsReport> report = new ArrayList<>();
         Long quantity = this.countByParty(id);
 
-        response.setTotalCoins(quantity);
-
         try {
             report = this.coinsReportRepository.getAllCoinsFromParty(id);
-        }catch (Exception ignored){}
+        }catch (Exception e){
+            throw new BadRequestException(ExceptionConstant.COINS_REPORT_ERROR_CODE,
+                    this.getClass(), ExceptionConstant.COINS_REPORT_ERROR);
+        }
 
-        response.setReport(report);
+        CoinsReportDTO response = CoinsReportDTO.builder()
+                .report(this.pagination.paginate(report, pagination))
+                .totalCoins(quantity).build();
 
         return ResponseEntity.ok(response);
 

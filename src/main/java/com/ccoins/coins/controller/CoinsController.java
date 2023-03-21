@@ -6,6 +6,8 @@ import com.ccoins.coins.dto.ResponseDTO;
 import com.ccoins.coins.dto.SpendCoinsRqDTO;
 import com.ccoins.coins.service.ICoinsService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -42,8 +44,8 @@ public class CoinsController {
     }
 
     @GetMapping("/party/{id}")
-    public ResponseEntity<CoinsReportDTO> getAllCoinsFromParty(@PathVariable Long id){
+    public ResponseEntity<CoinsReportDTO> getAllCoinsFromParty(@PathVariable Long id, @PageableDefault Pageable pagination){
 
-        return this.service.getAllCoinsFromParty(id);
+        return this.service.getAllCoinsFromParty(id, pagination);
     }
 }

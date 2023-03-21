@@ -5,8 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
-import java.util.List;
+import org.springframework.data.domain.Page;
 
 @Data
 @AllArgsConstructor
@@ -15,5 +14,6 @@ import java.util.List;
 public class CoinsReportDTO {
 
     private Long totalCoins;
-    private List<CoinsReport> report;
+    private Page<CoinsReport> report;
+
 }
