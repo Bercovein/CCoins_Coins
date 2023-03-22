@@ -13,6 +13,7 @@ import com.ccoins.coins.repository.ICoinsReportRepository;
 import com.ccoins.coins.repository.ICoinsRepository;
 import com.ccoins.coins.repository.IMatchRepository;
 import com.ccoins.coins.service.ICoinsService;
+import com.ccoins.coins.utils.CoinsReportEnum;
 import com.ccoins.coins.utils.DateUtils;
 import com.ccoins.coins.utils.PaginateUtils;
 import lombok.extern.slf4j.Slf4j;
@@ -110,13 +111,24 @@ public class CoinsService implements ICoinsService {
     }
 
     @Override
-    public ResponseEntity<CoinsReportDTO> getAllCoinsFromParty(Long id, Pageable pagination) {
+    public ResponseEntity<CoinsReportDTO> getAllCoinsFromParty(Long id, Pageable pagination, String type) {
 
-        List<CoinsReport> report = new ArrayList<>();
+        List<CoinsReport> report= new ArrayList<>();
         Long quantity = this.countByParty(id);
 
         try {
-            report = this.coinsReportRepository.getAllCoinsFromParty(id);
+
+            if (type != null){
+                if (CoinsReportEnum.ACQUIRED.getValue().equals(type))
+                    report = this.coinsReportRepository.getAllAcquiredCoinsFromParty(id);
+
+                if (CoinsReportEnum.EXPENDED.getValue().equals(type))
+                    report = this.coinsReportRepository.getAllExpendedCoinsFromParty(id);
+            }
+            else{
+                report = this.coinsReportRepository.getAllCoinsFromParty(id);
+            }
+
         }catch (Exception e){
             throw new BadRequestException(ExceptionConstant.COINS_REPORT_ERROR_CODE,
                     this.getClass(), ExceptionConstant.COINS_REPORT_ERROR);

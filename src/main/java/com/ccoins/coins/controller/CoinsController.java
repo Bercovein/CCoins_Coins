@@ -44,8 +44,10 @@ public class CoinsController {
     }
 
     @GetMapping("/party/{id}")
-    public ResponseEntity<CoinsReportDTO> getAllCoinsFromParty(@PathVariable Long id, @PageableDefault Pageable pagination){
+    public ResponseEntity<CoinsReportDTO> getAllCoinsFromParty(@PathVariable Long id,
+                                                               @PageableDefault Pageable pagination,
+                                                               @RequestParam(value = "type",  required = false) String type){
 
-        return this.service.getAllCoinsFromParty(id, pagination);
+        return this.service.getAllCoinsFromParty(id, pagination, type);
     }
 }

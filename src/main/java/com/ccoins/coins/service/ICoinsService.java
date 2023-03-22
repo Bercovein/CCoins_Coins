@@ -19,5 +19,5 @@ public interface ICoinsService {
     @Transactional
     ResponseEntity<ResponseDTO> spendCoinsInPrizeByParty(SpendCoinsRqDTO request);
 
-    ResponseEntity<CoinsReportDTO> getAllCoinsFromParty(Long id, Pageable pagination);
+    ResponseEntity<CoinsReportDTO> getAllCoinsFromParty(Long id, Pageable pagination, String type);
 }
