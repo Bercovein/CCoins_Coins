@@ -1,5 +1,6 @@
 package com.ccoins.coins.dto;
 
+import com.ccoins.coins.model.Match;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -18,4 +19,14 @@ public class MatchDTO {
     private LocalDateTime endDate;
     private boolean active;
     private Long game;
+
+    public  static MatchDTO convert(Match match){
+        return MatchDTO.builder()
+                .id(match.getId())
+                .startDate(match.getStartDate())
+                .endDate(match.getEndDate())
+                .active(match.isActive())
+                .game(match.getGame())
+                .build();
+    }
 }

@@ -7,8 +7,6 @@ import lombok.NoArgsConstructor;
 import javax.persistence.*;
 import java.time.LocalDateTime;
 
-import static com.ccoins.coins.utils.DateUtils.AUTO_DATE;
-
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -21,8 +19,7 @@ public class Match {
     @Column(name="id")
     private Long id;
 
-    @Column(name="start_date",insertable = false, updatable = false,
-            columnDefinition = AUTO_DATE)
+    @Column(name="start_date", updatable = false)
     private LocalDateTime startDate;
 
     @Column(name="end_date")

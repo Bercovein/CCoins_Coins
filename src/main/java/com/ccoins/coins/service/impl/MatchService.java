@@ -60,9 +60,12 @@ public class MatchService implements IMatchService {
                 SongDTO songDTO = SongDTO.builder().id(s.getId()).name(s.getName()).uri(s.getUri()).votes(votes).build();
                 songs.add(songDTO);
             });
-            voting.setSongs(null);
-            response = MapperUtils.map(voting, VotingDTO.class);
-            response.setSongs(songs);
+            response = VotingDTO.builder()
+                    .id(voting.getId())
+                    .winnerSong(SongDTO.convert(voting.getWinnerSong()))
+                    .songs(songs)
+                    .match(MatchDTO.convert(voting.getMatch()))
+                    .build();
         }
         return response;
     }
@@ -72,7 +75,6 @@ public class MatchService implements IMatchService {
 
         //deberia guardar la votación, con sus canciones y el match
         Match match = MapperUtils.map(request.getMatch(), Match.class);
-        match.setStartDate(DateUtils.now());
         match = this.matchRepository.save(match);
 
         List<Song> songs = new ArrayList<>();
