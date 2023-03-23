@@ -118,7 +118,7 @@ public class CoinsService implements ICoinsService {
 
         try {
 
-            if (type != null){
+            if (type != null && !type.isEmpty()){
                 if (CoinsReportEnum.ACQUIRED.getValue().equals(type))
                     report = this.coinsReportRepository.getAllAcquiredCoinsFromParty(id);
 
