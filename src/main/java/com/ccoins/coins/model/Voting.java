@@ -1,5 +1,6 @@
 package com.ccoins.coins.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.*;
@@ -21,18 +22,20 @@ public class Voting {
     @Column(name="id")
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "fk_winner_song", referencedColumnName = "id")
     @JsonIgnoreProperties("voting")
+    @JsonIgnore
     private Song winnerSong;
 
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "fk_match", referencedColumnName = "id")
+    @JoinColumn(name = "fk_match", referencedColumnName = "id", updatable = false)
     private Match match;
 
     @OneToMany(fetch=FetchType.LAZY, cascade = CascadeType.ALL, mappedBy="voting")
     @JsonIgnoreProperties({"voting"})
     @JsonManagedReference
+    @JsonIgnore
     private List<Song> songs;
 
 }

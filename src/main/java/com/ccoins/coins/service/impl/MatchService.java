@@ -73,51 +73,57 @@ public class MatchService implements IMatchService {
     @Override
     public VotingDTO saveVoting(VotingDTO request) {
 
-        //deberia guardar la votación, con sus canciones y el match
-        Match match = MapperUtils.map(request.getMatch(), Match.class);
-        match = this.matchRepository.save(match);
+        try{
+            //deberia guardar la votación, con sus canciones y el match
+            Match match = MapperUtils.map(request.getMatch(), Match.class);
+            match = this.matchRepository.save(match);
 
-        List<Song> songs = new ArrayList<>();
+            List<Song> songs = new ArrayList<>();
 
-        request.getSongs().forEach(songDTO -> {
-            Song song = MapperUtils.map(songDTO, Song.class);
-            songs.add(song);
-        });
+            request.getSongs().forEach(songDTO -> {
+                Song song = MapperUtils.map(songDTO, Song.class);
+                songs.add(song);
+            });
 
-        Voting voting = Voting.builder().match(match).winnerSong(null).build();
+            Voting voting = Voting.builder().match(match).winnerSong(null).build();
 
-        voting = this.votingRepository.save(voting);
+            voting = this.votingRepository.save(voting);
 
-        List<SongDTO> songDTOList = new ArrayList<>();
+            List<SongDTO> songDTOList = new ArrayList<>();
 
-        Voting finalVoting = voting;
-        songs.forEach(s -> {
-            s.setVoting(finalVoting);
-            s = this.songRepository.save(s);
-            songDTOList.add(SongDTO.builder().id(s.getId()).name(s.getName()).uri(s.getUri()).votes(0L).build());
-        });
+            Voting finalVoting = voting;
+            songs.forEach(s -> {
+                s.setVoting(finalVoting);
+                s = this.songRepository.save(s);
+                songDTOList.add(SongDTO.builder().id(s.getId()).name(s.getName()).uri(s.getUri()).votes(0L).build());
+            });
 
-        VotingDTO response = VotingDTO.builder()
-                .id(voting.getId())
-                .match(MapperUtils.map(match, MatchDTO.class))
-                .songs(songDTOList)
-                .winnerSong(null)
-                .build();
+            return VotingDTO.builder()
+                    .id(voting.getId())
+                    .match(MapperUtils.map(match, MatchDTO.class))
+                    .songs(songDTOList)
+                    .winnerSong(null)
+                    .build();
 
-        return response;
+        }catch(Exception e){
+            log.error(e.getMessage());
+        }
+        return null;
     }
 
     @Override
     public VotingDTO updateVoting(VotingDTO request) {
 
-        Match match = MapperUtils.map(request.getMatch(), Match.class);
-        match = this.matchRepository.save(match);
-        Voting voting = MapperUtils.map(request, Voting.class);
-        voting.setWinnerSong(MapperUtils.map(request.getWinnerSong(), Song.class));
-        voting.setMatch(match);
-        voting = this.votingRepository.save(voting);
+        try {
+            Match match = MapperUtils.map(request.getMatch(), Match.class);
+            this.matchRepository.save(match);
 
-        return MapperUtils.map(voting, VotingDTO.class);
+            this.votingRepository.updateWinnerSong(request.getId(), request.getWinnerSong().getId());
+            return request;
+        }catch(Exception e){
+            log.error(e.getMessage());
+        }
+        return null;
     }
 
     @Override

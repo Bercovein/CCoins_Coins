@@ -3,9 +3,11 @@ package com.ccoins.coins.repository;
 
 import com.ccoins.coins.model.Voting;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
@@ -30,4 +32,9 @@ public interface IVotingRepository extends JpaRepository<Voting, Long> {
             " inner join matches m on m.id = v.fk_match" +
             " where s.id = :id", nativeQuery = true)
     Optional<Voting> findBySongId(@Param("id") Long songId);
+
+    @Transactional
+    @Modifying
+    @Query(value = "UPDATE votations v SET v.FK_WINNER_SONG = :songId WHERE v.ID = :voteId", nativeQuery = true)
+    void updateWinnerSong(@Param("voteId") Long voteId, @Param("songId") Long songId);
 }
