@@ -32,4 +32,9 @@ public class VoteController {
     boolean hasVotedAlready(@PathVariable("userIp") String userIp, @PathVariable("barId")  Long barId){
         return this.service.hasVotedAlready(userIp,barId);
     }
+
+    @PutMapping("/expire/{maxVotingTime}")
+    void closeVotingByTime(Integer maxVotingTime){
+        this.service.closeVotingByTime(maxVotingTime);
+    }
 }

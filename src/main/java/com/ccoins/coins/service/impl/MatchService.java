@@ -183,4 +183,9 @@ public class MatchService implements IMatchService {
         return this.voteRepository.hasVotedAlready(userIp, barId);
     }
 
+    @Override
+    public void closeVotingByTime(Integer maxVotingTime) {
+        this.votingRepository.closeVotingByTime(maxVotingTime);
+    }
+
 }

@@ -22,4 +22,6 @@ public interface IMatchService {
     ResponseEntity<List<Long>> getClientsIdWhoVotedSong(Long songId);
 
     boolean hasVotedAlready(String userIp, Long barId);
+
+    void closeVotingByTime(Integer maxVotingTime);
 }

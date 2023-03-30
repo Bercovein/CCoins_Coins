@@ -37,4 +37,15 @@ public interface IVotingRepository extends JpaRepository<Voting, Long> {
     @Modifying
     @Query(value = "UPDATE votations v SET v.FK_WINNER_SONG = :songId WHERE v.ID = :voteId", nativeQuery = true)
     void updateWinnerSong(@Param("voteId") Long voteId, @Param("songId") Long songId);
+
+    @Transactional
+    @Modifying
+    @Query(value = "update matches m " +
+            "inner join games g on g.id = m.fk_game " +
+            "inner join games_types gt on gt.id = g.fk_game_type " +
+            "set end_date = NOW() " +
+            "where gt.name = 'VOTE' " +
+            "and m.END_DATE is null  " +
+            "and m.start_date < DATE_SUB(NOW(), INTERVAL :maxVotingTime MICROSECOND);", nativeQuery = true)
+    void closeVotingByTime(@Param("maxVotingTime") Integer maxVotingTime);
 }
