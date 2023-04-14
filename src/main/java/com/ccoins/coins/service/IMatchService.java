@@ -24,4 +24,6 @@ public interface IMatchService {
     boolean hasVotedAlready(String userIp, Long barId);
 
     void closeVotingByTime(Integer maxVotingTime);
+
+    void closeVotingByBarId(Long barId);
 }

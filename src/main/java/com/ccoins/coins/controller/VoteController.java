@@ -37,4 +37,9 @@ public class VoteController {
     void closeVotingByTime(Integer maxVotingTime){
         this.service.closeVotingByTime(maxVotingTime);
     }
+
+    @PutMapping("/close/bar/{id}")
+    void closeVotingByBarId(@PathVariable("id") Long barId){
+        this.service.closeVotingByBarId(barId);
+    }
 }

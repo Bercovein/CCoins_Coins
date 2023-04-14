@@ -1,9 +1,6 @@
 package com.ccoins.coins.controller;
 
-import com.ccoins.coins.dto.CoinsReportDTO;
-import com.ccoins.coins.dto.CoinsToWinnersDTO;
-import com.ccoins.coins.dto.ResponseDTO;
-import com.ccoins.coins.dto.SpendCoinsRqDTO;
+import com.ccoins.coins.dto.*;
 import com.ccoins.coins.service.ICoinsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
@@ -47,7 +44,16 @@ public class CoinsController {
     public ResponseEntity<CoinsReportDTO> getAllCoinsFromParty(@PathVariable Long id,
                                                                @PageableDefault Pageable pagination,
                                                                @RequestParam(value = "type",  required = false) String type){
-
         return this.service.getAllCoinsFromParty(id, pagination, type);
+    }
+
+    @GetMapping("/states")
+    public ResponseEntity<CoinStateListDTO> getAllStates(){
+        return this.service.getAllStates();
+    }
+
+    @GetMapping("/active-states")
+    public ResponseEntity<CoinStateListDTO> getActiveStates(){
+        return this.service.getActiveStates();
     }
 }

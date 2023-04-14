@@ -48,4 +48,17 @@ public interface IVotingRepository extends JpaRepository<Voting, Long> {
             "and m.END_DATE is null  " +
             "and m.start_date < DATE_SUB(NOW(), INTERVAL :maxVotingTime MICROSECOND);", nativeQuery = true)
     void closeVotingByTime(@Param("maxVotingTime") Integer maxVotingTime);
+
+    @Transactional
+    @Modifying
+    @Query(value = "update matches m  " +
+            "inner join games g on g.id = m.fk_game  " +
+            "inner join bars b on b.id = g.fk_bar " +
+            "inner join games_types gt on gt.id = g.fk_game_type  " +
+            "set end_date = NOW()  " +
+            "where " +
+            "b.id  = :id " +
+            "and gt.name = 'VOTE'  " +
+            "and m.END_DATE is null ", nativeQuery = true)
+    void closeVotingByBarId(@Param("barId") Long barId);
 }

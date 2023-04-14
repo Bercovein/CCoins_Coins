@@ -188,4 +188,9 @@ public class MatchService implements IMatchService {
         this.votingRepository.closeVotingByTime(maxVotingTime);
     }
 
+    @Override
+    public void closeVotingByBarId(Long barId) {
+        this.votingRepository.closeVotingByBarId(barId);
+    }
+
 }
