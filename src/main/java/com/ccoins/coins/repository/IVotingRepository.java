@@ -57,7 +57,7 @@ public interface IVotingRepository extends JpaRepository<Voting, Long> {
             "inner join games_types gt on gt.id = g.fk_game_type  " +
             "set end_date = NOW()  " +
             "where " +
-            "b.id  = :id " +
+            "b.id  = :barId " +
             "and gt.name = 'VOTE'  " +
             "and m.END_DATE is null ", nativeQuery = true)
     void closeVotingByBarId(@Param("barId") Long barId);

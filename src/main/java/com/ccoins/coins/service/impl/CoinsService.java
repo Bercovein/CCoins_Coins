@@ -1,20 +1,21 @@
 package com.ccoins.coins.service.impl;
 
-import com.ccoins.coins.dto.*;
+import com.ccoins.coins.configuration.CoinStatesProperties;
+import com.ccoins.coins.dto.CoinsReportDTO;
+import com.ccoins.coins.dto.CoinsToWinnersDTO;
+import com.ccoins.coins.dto.ResponseDTO;
+import com.ccoins.coins.dto.SpendCoinsRqDTO;
 import com.ccoins.coins.exceptions.BadRequestException;
 import com.ccoins.coins.exceptions.constant.ExceptionConstant;
-import com.ccoins.coins.model.CoinState;
 import com.ccoins.coins.model.Coins;
 import com.ccoins.coins.model.CoinsReport;
 import com.ccoins.coins.model.Match;
-import com.ccoins.coins.repository.ICoinStatesRepository;
 import com.ccoins.coins.repository.ICoinsReportRepository;
 import com.ccoins.coins.repository.ICoinsRepository;
 import com.ccoins.coins.repository.IMatchRepository;
 import com.ccoins.coins.service.ICoinsService;
 import com.ccoins.coins.utils.CoinsReportEnum;
 import com.ccoins.coins.utils.DateUtils;
-import com.ccoins.coins.utils.MapperUtils;
 import com.ccoins.coins.utils.PaginateUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,15 +39,16 @@ public class CoinsService implements ICoinsService {
     private final ICoinsReportRepository coinsReportRepository;
     private final IMatchRepository matchRepository;
     private final PaginateUtils pagination;
-    private final ICoinStatesRepository coinStatesRepository;
+
+    private final CoinStatesProperties coinStatesProperties;
 
     @Autowired
-    public CoinsService(ICoinsRepository coinsRepository, ICoinsReportRepository coinsReportRepository, IMatchRepository matchRepository, PaginateUtils pagination, ICoinStatesRepository coinStatesRepository) {
+    public CoinsService(ICoinsRepository coinsRepository, ICoinsReportRepository coinsReportRepository, IMatchRepository matchRepository, PaginateUtils pagination, CoinStatesProperties coinStatesProperties) {
         this.coinsRepository = coinsRepository;
         this.coinsReportRepository = coinsReportRepository;
         this.matchRepository = matchRepository;
         this.pagination = pagination;
-        this.coinStatesRepository = coinStatesRepository;
+        this.coinStatesProperties = coinStatesProperties;
     }
 
 
@@ -148,43 +150,24 @@ public class CoinsService implements ICoinsService {
     }
 
     @Override
-    public ResponseEntity<CoinStateListDTO> getAllStates() {
-
-        CoinStateListDTO response = new CoinStateListDTO();
+    public ResponseEntity<List<String>> getAllStates() {
 
         try{
-            List<CoinState> list = this.coinStatesRepository.findAll();
-            List<CoinStateDTO> dtoList = new ArrayList<>();
-
-            list.forEach(s -> dtoList.add(MapperUtils.map(s, CoinStateDTO.class)));
-
-            response.setList(dtoList);
+            return ResponseEntity.ok(this.coinStatesProperties.getAllStateList());
         }catch(Exception e){
             log.error(GET_COINS_STATES_ERROR);
         }
-
-        return ResponseEntity.ok(response);
+        return ResponseEntity.ok(new ArrayList<>());
     }
 
     @Override
-    public ResponseEntity<CoinStateListDTO> getActiveStates() {
-        CoinStateListDTO response = new CoinStateListDTO();
+    public ResponseEntity<List<String>> getActiveStates() {
 
         try{
-            List<Long> eligibleIds = new ArrayList<>();
-            eligibleIds.add(2L);
-            eligibleIds.add(3L);
-
-            List<CoinState> list = this.coinStatesRepository.findByIdIn(eligibleIds);
-            List<CoinStateDTO> dtoList = new ArrayList<>();
-
-            list.forEach(s -> dtoList.add(MapperUtils.map(s, CoinStateDTO.class)));
-
-            response.setList(dtoList);
+            return ResponseEntity.ok(this.coinStatesProperties.getEnabledStateList());
         }catch(Exception e){
             log.error(GET_COINS_STATES_ERROR);
         }
-
-        return ResponseEntity.ok(response);
+        return ResponseEntity.ok(new ArrayList<>());
     }
 }

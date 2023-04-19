@@ -18,7 +18,7 @@ public interface ICoinsService {
 
     ResponseEntity<CoinsReportDTO> getAllCoinsFromParty(Long id, Pageable pagination, String type);
 
-    ResponseEntity<CoinStateListDTO> getAllStates();
+    ResponseEntity<List<String>> getAllStates();
 
-    ResponseEntity<CoinStateListDTO> getActiveStates();
+    ResponseEntity<List<String>> getActiveStates();
 }
