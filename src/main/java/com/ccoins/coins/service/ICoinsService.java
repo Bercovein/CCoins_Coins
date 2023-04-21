@@ -22,9 +22,9 @@ public interface ICoinsService {
 
     ResponseEntity<List<String>> getActiveStates();
 
-    ResponseEntity<ResponseDTO> deliverPrizeOrCoins(Long id);
+    ResponseEntity<GenericRsDTO<Long>> deliverPrizeOrCoins(Long id);
 
-    ResponseEntity<ResponseDTO> cancelPrizeOrCoins(Long id);
+    ResponseEntity<GenericRsDTO<Long>> cancelPrizeOrCoins(Long id);
 
-    ResponseEntity<ResponseDTO> adjustPrizeOrCoins(Long id);
+    ResponseEntity<GenericRsDTO<Long>> adjustPrizeOrCoins(Long id);
 }

@@ -1,10 +1,7 @@
 package com.ccoins.coins.service.impl;
 
 import com.ccoins.coins.configuration.CoinStatesProperties;
-import com.ccoins.coins.dto.CoinsReportDTO;
-import com.ccoins.coins.dto.CoinsToWinnersDTO;
-import com.ccoins.coins.dto.ResponseDTO;
-import com.ccoins.coins.dto.SpendCoinsRqDTO;
+import com.ccoins.coins.dto.*;
 import com.ccoins.coins.exceptions.BadRequestException;
 import com.ccoins.coins.exceptions.constant.ExceptionConstant;
 import com.ccoins.coins.model.Coins;
@@ -176,79 +173,99 @@ public class CoinsService implements ICoinsService {
 
     @Override
     @Transactional
-    public ResponseEntity<ResponseDTO> deliverPrizeOrCoins(Long id) {
+    public ResponseEntity<GenericRsDTO<Long>> deliverPrizeOrCoins(Long id) {
 
         try {
             Optional<Coins> coinOrPrizeOpt = this.coinsRepository.findById(id);
 
             if (coinOrPrizeOpt.isEmpty()) {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ResponseDTO(DELIVER_PRIZE_OR_COINS_ERROR_CODE, CoinStateResponsesEnum.NOT_FOUND_COINS.getMessage()));
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new GenericRsDTO<>(DELIVER_PRIZE_OR_COINS_ERROR_CODE, CoinStateResponsesEnum.NOT_FOUND_COINS.getMessage()));
             }
 
             Coins coinOrPrize = coinOrPrizeOpt.get();
 
             if (!coinStatesProperties.getInDemand().equals(coinOrPrize.getState())) {
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ResponseDTO(DELIVER_PRIZE_OR_COINS_ERROR_CODE, CoinStateResponsesEnum.WRONG_STATE.getMessage()));
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new GenericRsDTO(DELIVER_PRIZE_OR_COINS_ERROR_CODE, CoinStateResponsesEnum.WRONG_STATE.getMessage()));
             }
 
             coinOrPrize.setState(coinStatesProperties.getDelivered());
             this.coinsRepository.save(coinOrPrize);
 
-            return ResponseEntity.ok(new ResponseDTO(null, CoinStateResponsesEnum.SUCCESSFULLY_DELIVERED.getMessage()));
+            Long partyId = this.coinsRepository.getPartyIdByClient(coinOrPrize.getClientParty());
+
+            return ResponseEntity.ok(new GenericRsDTO(null, CoinStateResponsesEnum.SUCCESSFULLY_DELIVERED.getMessage(), partyId));
         }catch (Exception e){
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ResponseDTO(DELIVER_PRIZE_OR_COINS_ERROR_CODE, CoinStateResponsesEnum.ERROR_STATE.getMessage()));
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new GenericRsDTO(DELIVER_PRIZE_OR_COINS_ERROR_CODE, CoinStateResponsesEnum.ERROR_STATE.getMessage()));
         }
     }
 
     @Override
     @Transactional
-    public ResponseEntity<ResponseDTO> cancelPrizeOrCoins(Long id) {
+    public ResponseEntity<GenericRsDTO<Long>> cancelPrizeOrCoins(Long id) {
         try {
             Optional<Coins> coinOrPrizeOpt = this.coinsRepository.findById(id);
 
             if (coinOrPrizeOpt.isEmpty()) {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ResponseDTO(DELIVER_PRIZE_OR_COINS_ERROR_CODE, CoinStateResponsesEnum.NOT_FOUND_COINS.getMessage()));
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new GenericRsDTO(DELIVER_PRIZE_OR_COINS_ERROR_CODE, CoinStateResponsesEnum.NOT_FOUND_COINS.getMessage()));
             }
 
             Coins coinOrPrize = coinOrPrizeOpt.get();
 
             if (!coinStatesProperties.getInDemand().equals(coinOrPrize.getState())) {
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ResponseDTO(DELIVER_PRIZE_OR_COINS_ERROR_CODE, CoinStateResponsesEnum.WRONG_STATE.getMessage()));
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new GenericRsDTO(DELIVER_PRIZE_OR_COINS_ERROR_CODE, CoinStateResponsesEnum.WRONG_STATE.getMessage()));
             }
 
             coinOrPrize.setState(coinStatesProperties.getCancelled());
             this.coinsRepository.save(coinOrPrize);
 
-            return ResponseEntity.ok(new ResponseDTO(null, CoinStateResponsesEnum.SUCCESSFULLY_CANCELED.getMessage()));
+            this.createAdjustment(coinOrPrize);
+
+            Long partyId = this.coinsRepository.getPartyIdByClient(coinOrPrize.getClientParty());
+
+            return ResponseEntity.ok(new GenericRsDTO<>(null, CoinStateResponsesEnum.SUCCESSFULLY_CANCELED.getMessage(),partyId));
         }catch (Exception e){
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ResponseDTO(DELIVER_PRIZE_OR_COINS_ERROR_CODE, CoinStateResponsesEnum.ERROR_STATE.getMessage()));
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new GenericRsDTO(DELIVER_PRIZE_OR_COINS_ERROR_CODE, CoinStateResponsesEnum.ERROR_STATE.getMessage()));
         }
     }
 
     @Override
-    public ResponseEntity<ResponseDTO> adjustPrizeOrCoins(Long id) {
+    public ResponseEntity<GenericRsDTO<Long>> adjustPrizeOrCoins(Long id) {
         try {
             Optional<Coins> coinOrPrizeOpt = this.coinsRepository.findById(id);
 
             if (coinOrPrizeOpt.isEmpty()) {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ResponseDTO(DELIVER_PRIZE_OR_COINS_ERROR_CODE, CoinStateResponsesEnum.NOT_FOUND_COINS.getMessage()));
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new GenericRsDTO(DELIVER_PRIZE_OR_COINS_ERROR_CODE, CoinStateResponsesEnum.NOT_FOUND_COINS.getMessage()));
             }
 
             Coins coinOrPrize = coinOrPrizeOpt.get();
 
             if (coinStatesProperties.getInDemand().equals(coinOrPrize.getState())) {
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ResponseDTO(DELIVER_PRIZE_OR_COINS_ERROR_CODE, CoinStateResponsesEnum.WRONG_STATE.getMessage()));
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new GenericRsDTO(DELIVER_PRIZE_OR_COINS_ERROR_CODE, CoinStateResponsesEnum.WRONG_STATE.getMessage()));
             }
-            
-            coinOrPrize.setId(null);
-            coinOrPrize.setState(coinStatesProperties.getAdjustment());
-            coinOrPrize.setQuantity(coinOrPrize.getQuantity() * -1);
 
-            this.coinsRepository.save(coinOrPrize);
+            this.createAdjustment(coinOrPrize);
 
-            return ResponseEntity.ok(new ResponseDTO(null, CoinStateResponsesEnum.SUCCESSFULLY_ADJUSTED.getMessage()));
+            Long partyId = this.coinsRepository.getPartyIdByClient(coinOrPrize.getClientParty());
+
+            return ResponseEntity.ok(new GenericRsDTO(null, CoinStateResponsesEnum.SUCCESSFULLY_ADJUSTED.getMessage(),partyId));
         }catch (Exception e){
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ResponseDTO(DELIVER_PRIZE_OR_COINS_ERROR_CODE, CoinStateResponsesEnum.ERROR_STATE.getMessage()));
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new GenericRsDTO(DELIVER_PRIZE_OR_COINS_ERROR_CODE, CoinStateResponsesEnum.ERROR_STATE.getMessage()));
         }
+    }
+
+    void createAdjustment(Coins coinOrPrize){
+
+        Coins coinsToAdjust = Coins.builder()
+                .id(null)
+                .clientParty(coinOrPrize.getClientParty())
+                .match(coinOrPrize.getMatch())
+                .active(coinOrPrize.isActive())
+                .dateTime(DateUtils.now())
+                .prize(coinOrPrize.getPrize())
+                .quantity(coinOrPrize.getQuantity() * -1)
+                .state(coinStatesProperties.getAdjustment())
+                .build();
+
+        this.coinsRepository.save(coinsToAdjust);
     }
 }
