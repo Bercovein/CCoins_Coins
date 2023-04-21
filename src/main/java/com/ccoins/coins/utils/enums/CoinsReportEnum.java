@@ -1,4 +1,4 @@
-package com.ccoins.coins.utils;
+package com.ccoins.coins.utils.enums;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

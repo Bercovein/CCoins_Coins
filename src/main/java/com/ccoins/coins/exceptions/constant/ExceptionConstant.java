@@ -157,5 +157,7 @@ public class ExceptionConstant {
     public static final String GET_COINS_STATES_ERROR_CODE = "0045";
     public static final String GET_COINS_STATES_ERROR = "Error trying to get coin states";
 
+    public static final String DELIVER_PRIZE_OR_COINS_ERROR_CODE = "0046";
+
 
 }

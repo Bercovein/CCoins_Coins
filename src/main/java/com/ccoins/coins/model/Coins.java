@@ -30,6 +30,9 @@ public class Coins {
     @Column(name="quantity")
     private Long quantity;
 
+    @Column(name="state")
+    private String state;
+
     @Column(name="active", columnDefinition = "boolean default true")
     private boolean active;
 

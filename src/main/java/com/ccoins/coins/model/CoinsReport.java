@@ -34,4 +34,7 @@ public class CoinsReport {
     @Column(name="CLIENT")
     private String client;
 
+    @Column(name="STATE")
+    private String state;
+
 }

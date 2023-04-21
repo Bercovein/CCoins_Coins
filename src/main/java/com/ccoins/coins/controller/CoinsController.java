@@ -57,4 +57,18 @@ public class CoinsController {
         return this.service.getActiveStates();
     }
 
+    @PostMapping("/{id}/deliver")
+    public ResponseEntity<ResponseDTO> deliverPrizeOrCoins(@PathVariable("id") Long id){
+        return this.service.deliverPrizeOrCoins(id);
+    }
+
+    @PostMapping("/{id}/cancel")
+    public ResponseEntity<ResponseDTO> cancelPrizeOrCoins(@PathVariable("id") Long id){
+        return this.service.cancelPrizeOrCoins(id);
+    }
+
+    @PostMapping("/{id}/adjust")
+    public ResponseEntity<ResponseDTO> adjustPrizeOrCoins(@PathVariable("id") Long id){
+        return this.service.adjustPrizeOrCoins(id);
+    }
 }

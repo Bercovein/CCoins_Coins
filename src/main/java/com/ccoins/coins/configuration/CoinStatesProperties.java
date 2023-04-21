@@ -18,6 +18,8 @@ public class CoinStatesProperties {
 
     private String inDemand;
     private String expired;
+
+    private String adjustment;
     private String delivered;
     private String cancelled;
 
@@ -25,6 +27,7 @@ public class CoinStatesProperties {
         List<String> list = new ArrayList<>();
         list.add(this.inDemand);
         list.add(this.expired);
+        list.add(this.adjustment);
         return list;
     }
 

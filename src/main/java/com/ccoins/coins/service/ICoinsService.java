@@ -21,4 +21,10 @@ public interface ICoinsService {
     ResponseEntity<List<String>> getAllStates();
 
     ResponseEntity<List<String>> getActiveStates();
+
+    ResponseEntity<ResponseDTO> deliverPrizeOrCoins(Long id);
+
+    ResponseEntity<ResponseDTO> cancelPrizeOrCoins(Long id);
+
+    ResponseEntity<ResponseDTO> adjustPrizeOrCoins(Long id);
 }
