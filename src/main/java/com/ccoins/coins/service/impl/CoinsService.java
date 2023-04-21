@@ -11,14 +11,13 @@ import com.ccoins.coins.repository.ICoinsReportRepository;
 import com.ccoins.coins.repository.ICoinsRepository;
 import com.ccoins.coins.repository.IMatchRepository;
 import com.ccoins.coins.service.ICoinsService;
-import com.ccoins.coins.utils.enums.CoinStateResponsesEnum;
-import com.ccoins.coins.utils.enums.CoinsReportEnum;
 import com.ccoins.coins.utils.DateUtils;
 import com.ccoins.coins.utils.PaginateUtils;
+import com.ccoins.coins.utils.enums.CoinStateResponsesEnum;
+import com.ccoins.coins.utils.enums.CoinsReportEnum;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -75,6 +74,7 @@ public class CoinsService implements ICoinsService {
                     .active(true)
                     .dateTime(LocalDateTime.now())
                     .quantity(request.getQuantity())
+                    .state(this.coinStatesProperties.getDelivered().getName())
                     .build();
             try{
                 this.coinsRepository.save(coins);
@@ -105,6 +105,7 @@ public class CoinsService implements ICoinsService {
                 .active(true)
                 .match(null)
                 .clientParty(request.getClientParty())
+                .state(this.coinStatesProperties.getInDemand().getName())
                 .build();
 
         try{
@@ -150,7 +151,7 @@ public class CoinsService implements ICoinsService {
     }
 
     @Override
-    public ResponseEntity<List<String>> getAllStates() {
+    public ResponseEntity<List<StateDTO>> getAllStates() {
 
         try{
             return ResponseEntity.ok(this.coinStatesProperties.getAllStateList());
@@ -161,7 +162,7 @@ public class CoinsService implements ICoinsService {
     }
 
     @Override
-    public ResponseEntity<List<String>> getActiveStates() {
+    public ResponseEntity<List<StateDTO>> getActiveStates() {
 
         try{
             return ResponseEntity.ok(this.coinStatesProperties.getEnabledStateList());
@@ -179,23 +180,23 @@ public class CoinsService implements ICoinsService {
             Optional<Coins> coinOrPrizeOpt = this.coinsRepository.findById(id);
 
             if (coinOrPrizeOpt.isEmpty()) {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new GenericRsDTO<>(DELIVER_PRIZE_OR_COINS_ERROR_CODE, CoinStateResponsesEnum.NOT_FOUND_COINS.getMessage()));
+                return ResponseEntity.ok().body(new GenericRsDTO<>(DELIVER_PRIZE_OR_COINS_ERROR_CODE, CoinStateResponsesEnum.NOT_FOUND_COINS.getMessage()));
             }
 
             Coins coinOrPrize = coinOrPrizeOpt.get();
 
             if (!coinStatesProperties.getInDemand().equals(coinOrPrize.getState())) {
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new GenericRsDTO(DELIVER_PRIZE_OR_COINS_ERROR_CODE, CoinStateResponsesEnum.WRONG_STATE.getMessage()));
+                return ResponseEntity.ok().body(new GenericRsDTO(DELIVER_PRIZE_OR_COINS_ERROR_CODE, CoinStateResponsesEnum.WRONG_STATE.getMessage()));
             }
 
-            coinOrPrize.setState(coinStatesProperties.getDelivered());
+            coinOrPrize.setState(coinStatesProperties.getDelivered().getName());
             this.coinsRepository.save(coinOrPrize);
 
             Long partyId = this.coinsRepository.getPartyIdByClient(coinOrPrize.getClientParty());
 
             return ResponseEntity.ok(new GenericRsDTO(null, CoinStateResponsesEnum.SUCCESSFULLY_DELIVERED.getMessage(), partyId));
         }catch (Exception e){
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new GenericRsDTO(DELIVER_PRIZE_OR_COINS_ERROR_CODE, CoinStateResponsesEnum.ERROR_STATE.getMessage()));
+            return ResponseEntity.ok().body(new GenericRsDTO(DELIVER_PRIZE_OR_COINS_ERROR_CODE, CoinStateResponsesEnum.ERROR_STATE.getMessage()));
         }
     }
 
@@ -206,16 +207,16 @@ public class CoinsService implements ICoinsService {
             Optional<Coins> coinOrPrizeOpt = this.coinsRepository.findById(id);
 
             if (coinOrPrizeOpt.isEmpty()) {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new GenericRsDTO(DELIVER_PRIZE_OR_COINS_ERROR_CODE, CoinStateResponsesEnum.NOT_FOUND_COINS.getMessage()));
+                return ResponseEntity.ok().body(new GenericRsDTO(DELIVER_PRIZE_OR_COINS_ERROR_CODE, CoinStateResponsesEnum.NOT_FOUND_COINS.getMessage()));
             }
 
             Coins coinOrPrize = coinOrPrizeOpt.get();
 
             if (!coinStatesProperties.getInDemand().equals(coinOrPrize.getState())) {
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new GenericRsDTO(DELIVER_PRIZE_OR_COINS_ERROR_CODE, CoinStateResponsesEnum.WRONG_STATE.getMessage()));
+                return ResponseEntity.ok().body(new GenericRsDTO(DELIVER_PRIZE_OR_COINS_ERROR_CODE, CoinStateResponsesEnum.WRONG_STATE.getMessage()));
             }
 
-            coinOrPrize.setState(coinStatesProperties.getCancelled());
+            coinOrPrize.setState(coinStatesProperties.getCancelled().getName());
             this.coinsRepository.save(coinOrPrize);
 
             this.createAdjustment(coinOrPrize);
@@ -224,7 +225,7 @@ public class CoinsService implements ICoinsService {
 
             return ResponseEntity.ok(new GenericRsDTO<>(null, CoinStateResponsesEnum.SUCCESSFULLY_CANCELED.getMessage(),partyId));
         }catch (Exception e){
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new GenericRsDTO(DELIVER_PRIZE_OR_COINS_ERROR_CODE, CoinStateResponsesEnum.ERROR_STATE.getMessage()));
+            return ResponseEntity.ok().body(new GenericRsDTO(DELIVER_PRIZE_OR_COINS_ERROR_CODE, CoinStateResponsesEnum.ERROR_STATE.getMessage()));
         }
     }
 
@@ -234,13 +235,13 @@ public class CoinsService implements ICoinsService {
             Optional<Coins> coinOrPrizeOpt = this.coinsRepository.findById(id);
 
             if (coinOrPrizeOpt.isEmpty()) {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new GenericRsDTO(DELIVER_PRIZE_OR_COINS_ERROR_CODE, CoinStateResponsesEnum.NOT_FOUND_COINS.getMessage()));
+                return ResponseEntity.ok().body(new GenericRsDTO(DELIVER_PRIZE_OR_COINS_ERROR_CODE, CoinStateResponsesEnum.NOT_FOUND_COINS.getMessage()));
             }
 
             Coins coinOrPrize = coinOrPrizeOpt.get();
 
             if (coinStatesProperties.getInDemand().equals(coinOrPrize.getState())) {
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new GenericRsDTO(DELIVER_PRIZE_OR_COINS_ERROR_CODE, CoinStateResponsesEnum.WRONG_STATE.getMessage()));
+                return ResponseEntity.ok().body(new GenericRsDTO(DELIVER_PRIZE_OR_COINS_ERROR_CODE, CoinStateResponsesEnum.WRONG_STATE.getMessage()));
             }
 
             this.createAdjustment(coinOrPrize);
@@ -249,7 +250,7 @@ public class CoinsService implements ICoinsService {
 
             return ResponseEntity.ok(new GenericRsDTO(null, CoinStateResponsesEnum.SUCCESSFULLY_ADJUSTED.getMessage(),partyId));
         }catch (Exception e){
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new GenericRsDTO(DELIVER_PRIZE_OR_COINS_ERROR_CODE, CoinStateResponsesEnum.ERROR_STATE.getMessage()));
+            return ResponseEntity.ok().body(new GenericRsDTO(DELIVER_PRIZE_OR_COINS_ERROR_CODE, CoinStateResponsesEnum.ERROR_STATE.getMessage()));
         }
     }
 
@@ -263,7 +264,7 @@ public class CoinsService implements ICoinsService {
                 .dateTime(DateUtils.now())
                 .prize(coinOrPrize.getPrize())
                 .quantity(coinOrPrize.getQuantity() * -1)
-                .state(coinStatesProperties.getAdjustment())
+                .state(coinStatesProperties.getAdjustment().getName())
                 .build();
 
         this.coinsRepository.save(coinsToAdjust);

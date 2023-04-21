@@ -48,12 +48,12 @@ public class CoinsController {
     }
 
     @GetMapping("/states")
-    public ResponseEntity<List<String>> getAllStates(){
+    public ResponseEntity<List<StateDTO>> getAllStates(){
         return this.service.getAllStates();
     }
 
     @GetMapping("/active-states")
-    public ResponseEntity<List<String>> getActiveStates(){
+    public ResponseEntity<List<StateDTO>> getActiveStates(){
         return this.service.getActiveStates();
     }
 

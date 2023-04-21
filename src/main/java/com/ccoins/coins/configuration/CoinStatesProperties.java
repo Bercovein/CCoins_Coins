@@ -1,5 +1,6 @@
 package com.ccoins.coins.configuration;
 
+import com.ccoins.coins.dto.StateDTO;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -16,30 +17,30 @@ import java.util.List;
 @ConfigurationProperties(value = "coin-states")
 public class CoinStatesProperties {
 
-    private String inDemand;
-    private String expired;
+    private StateDTO inDemand;
+    private StateDTO expired;
 
-    private String adjustment;
-    private String delivered;
-    private String cancelled;
+    private StateDTO adjustment;
+    private StateDTO delivered;
+    private StateDTO cancelled;
 
-    public List<String> getStaticList(){
-        List<String> list = new ArrayList<>();
+    public List<StateDTO> getStaticList(){
+        List<StateDTO> list = new ArrayList<>();
         list.add(this.inDemand);
         list.add(this.expired);
         list.add(this.adjustment);
         return list;
     }
 
-    public List<String> getEnabledStateList(){
-        List<String> list = new ArrayList<>();
+    public List<StateDTO> getEnabledStateList(){
+        List<StateDTO> list = new ArrayList<>();
         list.add(this.delivered);
         list.add(this.cancelled);
         return list;
     }
 
-    public  List<String> getAllStateList(){
-        List<String> list = this.getEnabledStateList();
+    public  List<StateDTO> getAllStateList(){
+        List<StateDTO> list = this.getEnabledStateList();
         list.addAll(this.getStaticList());
         return list;
     }
