@@ -159,5 +159,6 @@ public class ExceptionConstant {
 
     public static final String DELIVER_PRIZE_OR_COINS_ERROR_CODE = "0046";
 
+    public static final String STATE_REPORT_ERROR_CODE = "0047";
 
 }

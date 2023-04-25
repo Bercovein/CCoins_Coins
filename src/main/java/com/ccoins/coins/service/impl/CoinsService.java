@@ -6,7 +6,9 @@ import com.ccoins.coins.exceptions.BadRequestException;
 import com.ccoins.coins.exceptions.constant.ExceptionConstant;
 import com.ccoins.coins.model.Coins;
 import com.ccoins.coins.model.CoinsReport;
+import com.ccoins.coins.model.CoinsReportStates;
 import com.ccoins.coins.model.Match;
+import com.ccoins.coins.repository.ICoinsReportByStateRepository;
 import com.ccoins.coins.repository.ICoinsReportRepository;
 import com.ccoins.coins.repository.ICoinsRepository;
 import com.ccoins.coins.repository.IMatchRepository;
@@ -27,8 +29,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import static com.ccoins.coins.exceptions.constant.ExceptionConstant.DELIVER_PRIZE_OR_COINS_ERROR_CODE;
-import static com.ccoins.coins.exceptions.constant.ExceptionConstant.GET_COINS_STATES_ERROR;
+import static com.ccoins.coins.exceptions.constant.ExceptionConstant.*;
 
 
 @Service
@@ -37,14 +38,16 @@ public class CoinsService implements ICoinsService {
 
     private final ICoinsRepository coinsRepository;
     private final ICoinsReportRepository coinsReportRepository;
+    private final ICoinsReportByStateRepository coinsReportStatesRepository;
     private final IMatchRepository matchRepository;
     private final PaginateUtils pagination;
     private final CoinStatesProperties coinStatesProperties;
 
     @Autowired
-    public CoinsService(ICoinsRepository coinsRepository, ICoinsReportRepository coinsReportRepository, IMatchRepository matchRepository, PaginateUtils pagination, CoinStatesProperties coinStatesProperties) {
+    public CoinsService(ICoinsRepository coinsRepository, ICoinsReportRepository coinsReportRepository, ICoinsReportByStateRepository coinsReportStatesRepository, IMatchRepository matchRepository, PaginateUtils pagination, CoinStatesProperties coinStatesProperties) {
         this.coinsRepository = coinsRepository;
         this.coinsReportRepository = coinsReportRepository;
+        this.coinsReportStatesRepository = coinsReportStatesRepository;
         this.matchRepository = matchRepository;
         this.pagination = pagination;
         this.coinStatesProperties = coinStatesProperties;
@@ -253,6 +256,34 @@ public class CoinsService implements ICoinsService {
             return ResponseEntity.ok().body(new GenericRsDTO(DELIVER_PRIZE_OR_COINS_ERROR_CODE, CoinStateResponsesEnum.ERROR_STATE.getMessage()));
         }
     }
+
+    @Override
+    public ResponseEntity<GenericRsDTO<List<CoinsReportStates>>> getNotDemandedReport(Long id) {
+
+        return this.getStateReport(id,this.coinStatesProperties.getNotDemandList());
+
+    }
+
+    @Override
+    public ResponseEntity<GenericRsDTO<List<CoinsReportStates>>> getInDemandReport(Long id) {
+
+        return this.getStateReport(id,this.coinStatesProperties.getDemandList());
+    }
+    @Override
+    public ResponseEntity<GenericRsDTO<List<CoinsReportStates>>> getStateReport(Long id, List<String> states) {
+        try {
+            List<CoinsReportStates> list = this.coinsReportStatesRepository.getAllCoinsByStateListOrderByDate(id, states);
+
+            if (list.isEmpty()) {
+                return ResponseEntity.ok(new GenericRsDTO<>("", "No hay peticiones disponibles", list));
+            }
+
+            return ResponseEntity.ok(new GenericRsDTO<>("", "", list));
+        }catch (Exception e){
+            return ResponseEntity.ok().body(new GenericRsDTO(STATE_REPORT_ERROR_CODE, CoinStateResponsesEnum.ERROR_STATE.getMessage()));
+        }
+    }
+
 
     void createAdjustment(Coins coinOrPrize){
 

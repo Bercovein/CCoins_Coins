@@ -1,6 +1,7 @@
 package com.ccoins.coins.controller;
 
 import com.ccoins.coins.dto.*;
+import com.ccoins.coins.model.CoinsReportStates;
 import com.ccoins.coins.service.ICoinsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
@@ -70,5 +71,15 @@ public class CoinsController {
     @PostMapping("/{id}/adjust")
     public ResponseEntity<GenericRsDTO<Long>> adjustPrizeOrCoins(@PathVariable("id") Long id){
         return this.service.adjustPrizeOrCoins(id);
+    }
+
+    @GetMapping("/bar/{id}/ended-coins")
+    public ResponseEntity<GenericRsDTO<List<CoinsReportStates>>> getNotDemandedReport(@PathVariable("id") Long id){
+        return this.service.getNotDemandedReport(id);
+    }
+
+    @GetMapping("/bar/{id}/in-demand")
+    public ResponseEntity<GenericRsDTO<List<CoinsReportStates>>> getInDemandReport(@PathVariable("id") Long id){
+        return this.service.getInDemandReport(id);
     }
 }

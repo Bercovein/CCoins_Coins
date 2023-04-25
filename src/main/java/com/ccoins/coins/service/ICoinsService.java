@@ -1,6 +1,7 @@
 package com.ccoins.coins.service;
 
 import com.ccoins.coins.dto.*;
+import com.ccoins.coins.model.CoinsReportStates;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
@@ -27,4 +28,10 @@ public interface ICoinsService {
     ResponseEntity<GenericRsDTO<Long>> cancelPrizeOrCoins(Long id);
 
     ResponseEntity<GenericRsDTO<Long>> adjustPrizeOrCoins(Long id);
+
+    ResponseEntity<GenericRsDTO<List<CoinsReportStates>>> getNotDemandedReport(Long id);
+
+    ResponseEntity<GenericRsDTO<List<CoinsReportStates>>> getStateReport(Long id, List<String> states);
+
+    ResponseEntity<GenericRsDTO<List<CoinsReportStates>>> getInDemandReport(Long id);
 }

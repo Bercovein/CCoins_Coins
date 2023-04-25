@@ -19,7 +19,6 @@ public class CoinStatesProperties {
 
     private StateDTO inDemand;
     private StateDTO expired;
-
     private StateDTO adjustment;
     private StateDTO delivered;
     private StateDTO cancelled;
@@ -36,6 +35,21 @@ public class CoinStatesProperties {
         List<StateDTO> list = new ArrayList<>();
         list.add(this.delivered);
         list.add(this.cancelled);
+        return list;
+    }
+
+    public List<String> getNotDemandList(){
+        List<String> list = new ArrayList<>();
+        list.add(this.expired.getName());
+        list.add(this.adjustment.getName());
+        list.add(this.delivered.getName());
+        list.add(this.cancelled.getName());
+        return list;
+    }
+
+    public List<String> getDemandList(){
+        List<String> list = new ArrayList<>();
+        list.add(this.expired.getName());
         return list;
     }
 
