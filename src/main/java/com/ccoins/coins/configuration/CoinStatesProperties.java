@@ -49,7 +49,7 @@ public class CoinStatesProperties {
 
     public List<String> getDemandList(){
         List<String> list = new ArrayList<>();
-        list.add(this.expired.getName());
+        list.add(this.inDemand.getName());
         return list;
     }
 
