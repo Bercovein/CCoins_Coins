@@ -82,4 +82,9 @@ public class CoinsController {
     public ResponseEntity<GenericRsDTO<List<CoinsReportStates>>> getInDemandReport(@PathVariable("id") Long id){
         return this.service.getInDemandReport(id);
     }
+
+    @GetMapping("/bar/{id}/count-demand")
+    public ResponseEntity<LongDTO> countInDemandReport(@PathVariable("id") Long id){
+        return this.service.countInDemandReport(id);
+    }
 }

@@ -269,6 +269,21 @@ public class CoinsService implements ICoinsService {
 
         return this.getStateReport(id,this.coinStatesProperties.getDemandList());
     }
+
+    @Override
+    public ResponseEntity<LongDTO> countInDemandReport(Long id) {
+
+        LongDTO response = LongDTO.builder().value(0L).build();
+
+        List<CoinsReportStates> list = this.coinsReportStatesRepository.getAllCoinsByStateListOrderByDate(id, this.coinStatesProperties.getDemandList());
+
+        if(list != null){
+            response.setValue((long)list.size());
+        }
+
+        return ResponseEntity.ok(response);
+    }
+
     @Override
     public ResponseEntity<GenericRsDTO<List<CoinsReportStates>>> getStateReport(Long id, List<String> states) {
         try {

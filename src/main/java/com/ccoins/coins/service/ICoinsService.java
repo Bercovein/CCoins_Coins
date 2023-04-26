@@ -31,6 +31,8 @@ public interface ICoinsService {
 
     ResponseEntity<GenericRsDTO<List<CoinsReportStates>>> getNotDemandedReport(Long id);
 
+    ResponseEntity<LongDTO> countInDemandReport(Long id);
+
     ResponseEntity<GenericRsDTO<List<CoinsReportStates>>> getStateReport(Long id, List<String> states);
 
     ResponseEntity<GenericRsDTO<List<CoinsReportStates>>> getInDemandReport(Long id);
