@@ -7,6 +7,8 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.Optional;
+
 @Repository
 public interface ICoinsRepository extends JpaRepository<Coins, Long> {
     @Query(value = "SELECT IFNULL(SUM(c.quantity),0) FROM coins c" +
@@ -18,4 +20,17 @@ public interface ICoinsRepository extends JpaRepository<Coins, Long> {
             "where cp.fk_client = :id",nativeQuery = true)
     Long getPartyIdByClient(@Param("id") Long id);
 
+
+    @Query(value = "SELECT count(c.id) FROM coins c " +
+            "where c.FK_MATCH = :match " +
+            "and c.FK_CLIENT_PARTY = :clientId", nativeQuery = true)
+    Long findByMatchAndClient(@Param("match") Long match,@Param("clientId")  Long clientId);
+    
+    @Query(value = "SELECT count(c.id) FROM coins c " +
+            "    inner join clients_parties cp on cp.FK_CLIENT = c.FK_CLIENT_PARTY " +
+            "    where c.FK_MATCH = :match " +
+            "    and cp.FK_PARTY = :party", nativeQuery = true)
+    Long countSameMatchByParty(@Param("match") Long match, @Param("party") Long party);
+
+    Optional<Coins> findByMatchId(Long id);
 }

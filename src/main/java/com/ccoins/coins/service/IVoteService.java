@@ -6,7 +6,7 @@ import org.springframework.http.ResponseEntity;
 
 import java.util.List;
 
-public interface IMatchService {
+public interface IVoteService {
 
     VotingDTO getActualVotingByBarId(Long id);
 
@@ -26,4 +26,5 @@ public interface IMatchService {
     void closeVotingByTime(Integer maxVotingTime);
 
     void closeVotingByBarId(Long barId);
+
 }

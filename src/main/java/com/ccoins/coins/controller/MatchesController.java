@@ -1,7 +1,7 @@
 package com.ccoins.coins.controller;
 
 import com.ccoins.coins.dto.VotingDTO;
-import com.ccoins.coins.service.IMatchService;
+import com.ccoins.coins.service.IVoteService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -12,7 +12,7 @@ import static org.springframework.http.HttpStatus.OK;
 public class MatchesController {
 
     @Autowired
-    private IMatchService service;
+    private IVoteService service;
 
     @GetMapping("/voting/bar/{id}")
     public VotingDTO getActualVotingByBar(@PathVariable Long id){

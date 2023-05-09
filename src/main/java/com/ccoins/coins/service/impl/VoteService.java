@@ -13,11 +13,12 @@ import com.ccoins.coins.repository.IMatchRepository;
 import com.ccoins.coins.repository.ISongRepository;
 import com.ccoins.coins.repository.IVoteRepository;
 import com.ccoins.coins.repository.IVotingRepository;
-import com.ccoins.coins.service.IMatchService;
+import com.ccoins.coins.service.IVoteService;
 import com.ccoins.coins.utils.DateUtils;
 import com.ccoins.coins.utils.MapperUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -31,7 +32,7 @@ import static com.ccoins.coins.exceptions.constant.ExceptionConstant.*;
 
 @Service
 @Slf4j
-public class MatchService implements IMatchService {
+public class VoteService implements IVoteService {
 
     private final IMatchRepository matchRepository;
     private final IVotingRepository votingRepository;
@@ -39,8 +40,14 @@ public class MatchService implements IMatchService {
     private final ISongRepository songRepository;
     private final IVoteRepository voteRepository;
 
+    @Value("${code.expiration}")
+    private Long codeExpiration;
+
+    @Value("${code.length}")
+    private int codeLength;
+
     @Autowired
-    public MatchService(IMatchRepository matchRepository, IVotingRepository votingRepository, ISongRepository songRepository, IVoteRepository voteRepository) {
+    public VoteService(IMatchRepository matchRepository, IVotingRepository votingRepository, ISongRepository songRepository, IVoteRepository voteRepository) {
         this.matchRepository = matchRepository;
         this.votingRepository = votingRepository;
         this.songRepository = songRepository;

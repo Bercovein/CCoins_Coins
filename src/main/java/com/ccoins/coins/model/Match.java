@@ -1,6 +1,7 @@
 package com.ccoins.coins.model;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -12,6 +13,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @Entity(name = "Matches")
 @Table(name = "MATCHES")
+@Builder
 public class Match {
 
     @Id

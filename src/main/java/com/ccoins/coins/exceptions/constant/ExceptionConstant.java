@@ -161,4 +161,17 @@ public class ExceptionConstant {
 
     public static final String STATE_REPORT_ERROR_CODE = "0047";
 
+
+    public static final String NEW_CODE_ERROR_CODE = "0048";
+    public static final String NEW_CODE_ERROR = "Error trying to create new code";
+
+    public static final String INVALIDATE_CODE_ERROR_CODE = "0049";
+    public static final String INVALIDATE_CODE_ERROR = "Error trying to invalidate code";
+
+    public static final String CODE_ALREADY_USED_ERROR_CODE = "0050";
+    public static final String CODE_ALREADY_USED_ERROR = "El código ingresado ya está en uso.";
+
+    public static final String CODE_NOT_FOUND_ERROR_CODE = "0051";
+    public static final String CODE_NOT_FOUND_ERROR = "El código ingresado no se encuentra.";
+
 }
