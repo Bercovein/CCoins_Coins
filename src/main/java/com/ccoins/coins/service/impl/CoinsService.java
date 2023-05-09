@@ -188,7 +188,7 @@ public class CoinsService implements ICoinsService {
 
             Coins coinOrPrize = coinOrPrizeOpt.get();
 
-            if (!coinStatesProperties.getInDemand().equals(coinOrPrize.getState())) {
+            if (!coinStatesProperties.getInDemand().getName().equals(coinOrPrize.getState())) {
                 return ResponseEntity.ok().body(new GenericRsDTO(DELIVER_PRIZE_OR_COINS_ERROR_CODE, CoinStateResponsesEnum.WRONG_STATE.getMessage()));
             }
 
@@ -215,7 +215,7 @@ public class CoinsService implements ICoinsService {
 
             Coins coinOrPrize = coinOrPrizeOpt.get();
 
-            if (!coinStatesProperties.getInDemand().equals(coinOrPrize.getState())) {
+            if (!coinStatesProperties.getInDemand().getName().equals(coinOrPrize.getState())) {
                 return ResponseEntity.ok().body(new GenericRsDTO(DELIVER_PRIZE_OR_COINS_ERROR_CODE, CoinStateResponsesEnum.WRONG_STATE.getMessage()));
             }
 
@@ -243,7 +243,7 @@ public class CoinsService implements ICoinsService {
 
             Coins coinOrPrize = coinOrPrizeOpt.get();
 
-            if (coinStatesProperties.getInDemand().equals(coinOrPrize.getState())) {
+            if (coinStatesProperties.getInDemand().getName().equals(coinOrPrize.getState())) {
                 return ResponseEntity.ok().body(new GenericRsDTO(DELIVER_PRIZE_OR_COINS_ERROR_CODE, CoinStateResponsesEnum.WRONG_STATE.getMessage()));
             }
 
