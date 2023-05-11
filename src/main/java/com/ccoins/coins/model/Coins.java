@@ -45,4 +45,7 @@ public class Coins {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "fk_match", referencedColumnName = "id")
     private Match match;
+
+    @Column(name="updatable")
+    private boolean updatable;
 }

@@ -205,6 +205,7 @@ public class CodeService implements ICodeService {
                 .match(match)
                 .clientParty(request.getClientId())
                 .active(true)
+                .updatable(true)
                 .dateTime(LocalDateTime.now())
                 .quantity(code.getPoints())
                 .prize(code.getPrize())

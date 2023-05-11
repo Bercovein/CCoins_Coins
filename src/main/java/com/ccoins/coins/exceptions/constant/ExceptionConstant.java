@@ -174,4 +174,6 @@ public class ExceptionConstant {
     public static final String CODE_NOT_FOUND_ERROR_CODE = "0051";
     public static final String CODE_NOT_FOUND_ERROR = "El código ingresado no se encuentra.";
 
+    public static final String COIN_NOT_UPDATABLE_ERROR_CODE = "0052";
+
 }

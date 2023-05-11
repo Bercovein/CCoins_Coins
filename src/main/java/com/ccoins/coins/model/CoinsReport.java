@@ -37,4 +37,7 @@ public class CoinsReport {
     @Column(name="STATE")
     private String state;
 
+    @Column(name="UPDATABLE")
+    private boolean updatable;
+
 }

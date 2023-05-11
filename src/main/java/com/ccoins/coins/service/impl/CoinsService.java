@@ -76,6 +76,7 @@ public class CoinsService implements ICoinsService {
                     .clientParty(client)
                     .active(true)
                     .dateTime(LocalDateTime.now())
+                    .updatable(true)
                     .quantity(request.getQuantity())
                     .state(this.coinStatesProperties.getDelivered().getName())
                     .build();
@@ -106,6 +107,7 @@ public class CoinsService implements ICoinsService {
                 .prize(request.getPrizeId())
                 .dateTime(DateUtils.now())
                 .active(true)
+                .updatable(true)
                 .match(null)
                 .clientParty(request.getClientParty())
                 .state(this.coinStatesProperties.getInDemand().getName())
@@ -247,8 +249,13 @@ public class CoinsService implements ICoinsService {
                 return ResponseEntity.ok().body(new GenericRsDTO(DELIVER_PRIZE_OR_COINS_ERROR_CODE, CoinStateResponsesEnum.WRONG_STATE.getMessage()));
             }
 
-            this.createAdjustment(coinOrPrize);
+            if(!coinOrPrize.isUpdatable()){
+                return ResponseEntity.ok().body(new GenericRsDTO(COIN_NOT_UPDATABLE_ERROR_CODE, CoinStateResponsesEnum.NOT_ADJUSTABLE_STATE.getMessage()));
+            }
 
+            this.createAdjustment(coinOrPrize);
+            coinOrPrize.setUpdatable(false);
+            this.coinsRepository.save(coinOrPrize);
             Long partyId = this.coinsRepository.getPartyIdByClient(coinOrPrize.getClientParty());
 
             return ResponseEntity.ok(new GenericRsDTO(null, CoinStateResponsesEnum.SUCCESSFULLY_ADJUSTED.getMessage(),partyId));
@@ -307,6 +314,7 @@ public class CoinsService implements ICoinsService {
                 .clientParty(coinOrPrize.getClientParty())
                 .match(coinOrPrize.getMatch())
                 .active(coinOrPrize.isActive())
+                .updatable(false)
                 .dateTime(DateUtils.now())
                 .prize(coinOrPrize.getPrize())
                 .quantity(coinOrPrize.getQuantity() * -1)

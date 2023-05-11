@@ -9,6 +9,7 @@ public enum CoinStateResponsesEnum {
 
     NOT_FOUND_COINS("No se ha encontrado el registro."),
     WRONG_STATE("Se encuentra en un estado incorrecto. Realice un ajuste si es necesario."),
+    NOT_ADJUSTABLE_STATE("Se encuentra en un estado incorrecto para ser ajustable."),
     ERROR_STATE("Ha ocurrido un error. Reintente nuevamente."),
     SUCCESSFULLY_DELIVERED("Se cambió el estado a Entregado correctamente. Puede entregar el premio al cliente."),
     SUCCESSFULLY_CANCELED("Se cambió el estado a Cancelado correctamente."),
