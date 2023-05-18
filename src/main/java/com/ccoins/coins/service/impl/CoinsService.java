@@ -222,6 +222,7 @@ public class CoinsService implements ICoinsService {
             }
 
             coinOrPrize.setState(coinStatesProperties.getCancelled().getName());
+            coinOrPrize.setUpdatable(false);
             this.coinsRepository.save(coinOrPrize);
 
             this.createAdjustment(coinOrPrize);
