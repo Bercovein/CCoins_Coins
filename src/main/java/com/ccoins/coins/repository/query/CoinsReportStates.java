@@ -11,5 +11,6 @@ public class CoinsReportStates {
             "inner join prizes pr on pr.id = c.FK_PRIZE " +
             "where c.state IN (:list) " +
             "and b.ID = :id " +
+            "and c.START_DATE > (now() - interval 24 hour) " +
             "order by c.start_date desc) AS COINS_REPORT_STATES";
 }
