@@ -207,7 +207,7 @@ public class CodeService implements ICodeService {
                 .active(true)
                 .updatable(true)
                 .dateTime(LocalDateTime.now())
-                .quantity(code.getPoints())
+                .quantity(code.getPoints() != null ? code.getPoints() : 0)
                 .prize(code.getPrize())
                 .state(this.coinStatesProperties.getDelivered().getName())
                 .build();
