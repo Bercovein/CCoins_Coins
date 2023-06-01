@@ -179,6 +179,8 @@ public class CoinsService implements ICoinsService {
                 report = this.coinsReportRepository.getAllCoinsFromParty(id);
             }
 
+            report.removeIf(crs -> !crs.isUpdatable() && this.coinStatesProperties.getDelivered().getName().equals(crs.getState()));
+
         }catch (Exception e){
             throw new BadRequestException(ExceptionConstant.COINS_REPORT_ERROR_CODE,
                     this.getClass(), ExceptionConstant.COINS_REPORT_ERROR);
