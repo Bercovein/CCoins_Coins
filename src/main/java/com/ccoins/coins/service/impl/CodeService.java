@@ -217,7 +217,7 @@ public class CodeService implements ICodeService {
             }
         }
 
-        ClientParty clientParty = findActiveClientPartyByClient(request.getClientId());
+        ClientParty clientParty = this.findActiveClientPartyByClient(request.getClientId());
 
         if(clientParty == null){
             return ResponseEntity.ok(new GenericRsDTO(RedeemCodeResponsesEnum.CLIENT_DONT_EXIST_BY_PARTY.getCode(), RedeemCodeResponsesEnum.CLIENT_DONT_EXIST_BY_PARTY.getMessage()));
