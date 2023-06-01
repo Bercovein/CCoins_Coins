@@ -33,7 +33,7 @@ public interface ICoinsService {
 
     ResponseEntity<LongDTO> countInDemandReport(Long id);
 
-    ResponseEntity<GenericRsDTO<List<CoinsReportStates>>> getStateReport(Long id, List<String> states);
+    List<CoinsReportStates> getStateReport(Long id, List<String> states);
 
     ResponseEntity<GenericRsDTO<List<CoinsReportStates>>> getInDemandReport(Long id);
 }

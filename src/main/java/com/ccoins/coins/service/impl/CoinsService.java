@@ -305,14 +305,27 @@ public class CoinsService implements ICoinsService {
     @Override
     public ResponseEntity<GenericRsDTO<List<CoinsReportStates>>> getNotDemandedReport(Long id) {
 
-        return this.getStateReport(id,this.coinStatesProperties.getNotDemandList());
+        List<CoinsReportStates> list = this.getStateReport(id, this.coinStatesProperties.getNotDemandList());
 
+        if (list.isEmpty()) {
+            return ResponseEntity.ok(new GenericRsDTO<>("", "No hay peticiones disponibles", list));
+        }
+
+        list.removeIf(crs -> !crs.getUpdatable() && this.coinStatesProperties.getDelivered().getName().equals(crs.getState()));
+
+        return ResponseEntity.ok(new GenericRsDTO<>("", "", list));
     }
 
     @Override
     public ResponseEntity<GenericRsDTO<List<CoinsReportStates>>> getInDemandReport(Long id) {
 
-        return this.getStateReport(id,this.coinStatesProperties.getDemandList());
+        List<CoinsReportStates> list = this.getStateReport(id,this.coinStatesProperties.getDemandList());
+
+        if (list.isEmpty()) {
+            return ResponseEntity.ok(new GenericRsDTO<>("", "No hay peticiones disponibles", list));
+        }
+
+        return ResponseEntity.ok(new GenericRsDTO<>("", "", list));
     }
 
     @Override
@@ -330,17 +343,11 @@ public class CoinsService implements ICoinsService {
     }
 
     @Override
-    public ResponseEntity<GenericRsDTO<List<CoinsReportStates>>> getStateReport(Long id, List<String> states) {
+    public List<CoinsReportStates> getStateReport(Long id, List<String> states) {
         try {
-            List<CoinsReportStates> list = this.coinsReportStatesRepository.getAllCoinsByStateListOrderByDate(id, states);
-
-            if (list.isEmpty()) {
-                return ResponseEntity.ok(new GenericRsDTO<>("", "No hay peticiones disponibles", list));
-            }
-
-            return ResponseEntity.ok(new GenericRsDTO<>("", "", list));
+            return this.coinsReportStatesRepository.getAllCoinsByStateListOrderByDate(id, states);
         }catch (Exception e){
-            return ResponseEntity.ok().body(new GenericRsDTO(STATE_REPORT_ERROR_CODE, CoinStateResponsesEnum.ERROR_STATE.getMessage()));
+            return new ArrayList<>();
         }
     }
 
