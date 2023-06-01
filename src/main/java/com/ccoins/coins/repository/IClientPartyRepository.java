@@ -10,7 +10,7 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface IClientPartyRepository extends JpaRepository<ClientParty, Long> {
 
-    @Query(value = "select * from clients_parties cp " +
+    @Query(value = "select cp.* from clients_parties cp " +
             "where cp.FK_CLIENT = :client " +
             "and cp.ACTIVE is true", nativeQuery = true)
     ClientParty findByClient(@Param("client") Long client);
