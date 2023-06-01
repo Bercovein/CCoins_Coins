@@ -23,7 +23,7 @@ public interface ICoinsRepository extends JpaRepository<Coins, Long> {
     Long findByMatchAndClient(@Param("match") Long match,@Param("clientParty")  Long clientParty);
     
     @Query(value = "SELECT count(c.id) FROM coins c " +
-            "    inner join clients_parties cp on cp.FK_CLIENT = c.FK_CLIENT_PARTY " +
+            "    inner join clients_parties cp on cp.id = c.FK_CLIENT_PARTY " +
             "    where c.FK_MATCH = :match " +
             "    and cp.FK_PARTY = :party", nativeQuery = true)
     Long countSameMatchByParty(@Param("match") Long match, @Param("party") Long party);
