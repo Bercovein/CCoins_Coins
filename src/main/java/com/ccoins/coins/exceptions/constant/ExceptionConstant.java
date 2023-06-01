@@ -174,6 +174,12 @@ public class ExceptionConstant {
     public static final String CODE_NOT_FOUND_ERROR_CODE = "0051";
     public static final String CODE_NOT_FOUND_ERROR = "El código ingresado no se encuentra.";
 
+    public static final String GIVE_COINS_TO_CLIENTS_ERROR_CODE = "0052";
+    public static final String GIVE_COINS_TO_CLIENTS_ERROR = "Error al intentar dar coins a los clientes";
+
+    public static final String CLIENT_PARTY_FIND_ERROR_CODE = "0053";
+    public static final String CLIENT_PARTY_FIND_ERROR = "Error al intentar buscar al cliente en la party";
+
     public static final String COIN_NOT_UPDATABLE_ERROR_CODE = "0052";
 
 }

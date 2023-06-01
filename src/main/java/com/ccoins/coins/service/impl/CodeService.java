@@ -3,9 +3,12 @@ package com.ccoins.coins.service.impl;
 import com.ccoins.coins.configuration.CoinStatesProperties;
 import com.ccoins.coins.dto.*;
 import com.ccoins.coins.exceptions.BadRequestException;
+import com.ccoins.coins.exceptions.constant.ExceptionConstant;
+import com.ccoins.coins.model.ClientParty;
 import com.ccoins.coins.model.Code;
 import com.ccoins.coins.model.Coins;
 import com.ccoins.coins.model.Match;
+import com.ccoins.coins.repository.IClientPartyRepository;
 import com.ccoins.coins.repository.ICodesRepository;
 import com.ccoins.coins.repository.ICoinsRepository;
 import com.ccoins.coins.repository.IMatchRepository;
@@ -38,20 +41,22 @@ public class CodeService implements ICodeService {
     private final ICoinsRepository coinsRepository;
     private final ICodesRepository codesRepository;
     private final CoinStatesProperties coinStatesProperties;
+    private final IClientPartyRepository clientPartyRepository;
     private final Long codeExpiration;
     private final int codeLength;
 
     @Autowired
     public CodeService(@Value("${code.expiration}") Long codeExpiration,
                        @Value("${code.length}") int codeLength,
-                        IMatchRepository matchRepository, ICoinsRepository coinsRepository,
-                       ICodesRepository codesRepository, CoinStatesProperties coinStatesProperties) {
+                       IMatchRepository matchRepository, ICoinsRepository coinsRepository,
+                       ICodesRepository codesRepository, CoinStatesProperties coinStatesProperties, IClientPartyRepository clientPartyRepository) {
         this.matchRepository = matchRepository;
         this.coinsRepository = coinsRepository;
         this.codesRepository = codesRepository;
         this.coinStatesProperties = coinStatesProperties;
         this.codeExpiration = codeExpiration;
         this.codeLength = codeLength;
+        this.clientPartyRepository = clientPartyRepository;
     }
 
     @Override
@@ -113,6 +118,16 @@ public class CodeService implements ICodeService {
             return ResponseEntity.ok(response);
         }catch (Exception e){
             throw new BadRequestException(NEW_CODE_ERROR_CODE, NEW_CODE_ERROR);
+        }
+    }
+
+    private ClientParty findActiveClientPartyByClient(Long client){
+
+        try {
+            return this.clientPartyRepository.findByClient(client);
+        }catch(Exception e){
+            throw new BadRequestException(ExceptionConstant.CLIENT_PARTY_FIND_ERROR_CODE,
+                    this.getClass(), ExceptionConstant.CLIENT_PARTY_FIND_ERROR);
         }
     }
 
@@ -202,9 +217,15 @@ public class CodeService implements ICodeService {
             }
         }
 
+        ClientParty clientParty = findActiveClientPartyByClient(request.getClientId());
+
+        if(clientParty == null){
+            return ResponseEntity.ok(new GenericRsDTO(RedeemCodeResponsesEnum.CLIENT_DONT_EXIST_BY_PARTY.getCode(), RedeemCodeResponsesEnum.CLIENT_DONT_EXIST_BY_PARTY.getMessage()));
+        }
+
         Coins coins = Coins.builder()
                 .match(match)
-                .clientParty(request.getClientId())
+                .clientParty(clientParty.getId())
                 .active(true)
                 .updatable(true)
                 .dateTime(LocalDateTime.now())

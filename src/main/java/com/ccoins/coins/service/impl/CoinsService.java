@@ -4,14 +4,8 @@ import com.ccoins.coins.configuration.CoinStatesProperties;
 import com.ccoins.coins.dto.*;
 import com.ccoins.coins.exceptions.BadRequestException;
 import com.ccoins.coins.exceptions.constant.ExceptionConstant;
-import com.ccoins.coins.model.Coins;
-import com.ccoins.coins.model.CoinsReport;
-import com.ccoins.coins.model.CoinsReportStates;
-import com.ccoins.coins.model.Match;
-import com.ccoins.coins.repository.ICoinsReportByStateRepository;
-import com.ccoins.coins.repository.ICoinsReportRepository;
-import com.ccoins.coins.repository.ICoinsRepository;
-import com.ccoins.coins.repository.IMatchRepository;
+import com.ccoins.coins.model.*;
+import com.ccoins.coins.repository.*;
 import com.ccoins.coins.service.ICoinsService;
 import com.ccoins.coins.utils.DateUtils;
 import com.ccoins.coins.utils.PaginateUtils;
@@ -43,14 +37,17 @@ public class CoinsService implements ICoinsService {
     private final PaginateUtils pagination;
     private final CoinStatesProperties coinStatesProperties;
 
+    private final IClientPartyRepository clientPartyRepository;
+
     @Autowired
-    public CoinsService(ICoinsRepository coinsRepository, ICoinsReportRepository coinsReportRepository, ICoinsReportByStateRepository coinsReportStatesRepository, IMatchRepository matchRepository, PaginateUtils pagination, CoinStatesProperties coinStatesProperties) {
+    public CoinsService(ICoinsRepository coinsRepository, ICoinsReportRepository coinsReportRepository, ICoinsReportByStateRepository coinsReportStatesRepository, IMatchRepository matchRepository, PaginateUtils pagination, CoinStatesProperties coinStatesProperties, IClientPartyRepository clientPartyRepository) {
         this.coinsRepository = coinsRepository;
         this.coinsReportRepository = coinsReportRepository;
         this.coinsReportStatesRepository = coinsReportStatesRepository;
         this.matchRepository = matchRepository;
         this.pagination = pagination;
         this.coinStatesProperties = coinStatesProperties;
+        this.clientPartyRepository = clientPartyRepository;
     }
 
 
@@ -67,26 +64,59 @@ public class CoinsService implements ICoinsService {
     @Override
     public List<Long> giveCoinsToClients(CoinsToWinnersDTO request) {
 
-        Match match = matchRepository.getById(request.getMatchId());
         List<Long> response = new ArrayList<>();
 
-        request.getClients().forEach(client -> {
+        try {
+            Match match = matchRepository.getById(request.getMatchId());
+
+            request.getClients().forEach(client -> {
+                Long clientAdded = this.giveCoinsToOneClient(client, match, request.getQuantity());
+                if (clientAdded != null) {
+                    response.add(clientAdded);
+                }
+            });
+        }catch (Exception e){
+            throw new BadRequestException(ExceptionConstant.GIVE_COINS_TO_CLIENTS_ERROR_CODE,
+                    this.getClass(), ExceptionConstant.GIVE_COINS_TO_CLIENTS_ERROR);
+        }
+
+        return response;
+    }
+
+    private Long giveCoinsToOneClient(Long client, Match match, Long quantity){
+
+        Long response = null;
+
+        ClientParty clientParty = this.findActiveClientPartyByClient(client);
+
+        if(clientParty != null){
+
             Coins coins = Coins.builder()
                     .match(match)
-                    .clientParty(client)
+                    .clientParty(clientParty.getId())
                     .active(true)
                     .dateTime(LocalDateTime.now())
                     .updatable(true)
-                    .quantity(request.getQuantity())
+                    .quantity(quantity)
                     .state(this.coinStatesProperties.getDelivered().getName())
                     .build();
             try{
                 this.coinsRepository.save(coins);
-                response.add(client);
+                response = client;
             }catch (Exception ignored){}
-        });
+        }
 
         return response;
+    }
+
+    private ClientParty findActiveClientPartyByClient(Long client){
+
+        try {
+            return this.clientPartyRepository.findByClient(client);
+        }catch(Exception e){
+            throw new BadRequestException(ExceptionConstant.CLIENT_PARTY_FIND_ERROR_CODE,
+                    this.getClass(), ExceptionConstant.CLIENT_PARTY_FIND_ERROR);
+        }
     }
 
     @Override
@@ -102,6 +132,13 @@ public class CoinsService implements ICoinsService {
 
         Long coinsSpended = request.getPrizePoints() > 0 ? request.getPrizePoints()  * - 1 : request.getPrizePoints();
 
+        ClientParty clientParty = this.findActiveClientPartyByClient(request.getClientParty());
+
+        if(clientParty == null){
+            return ResponseEntity.ok(ResponseDTO.builder().code("1")
+                    .message("Client doesn't exist").build());
+        }
+
         Coins coins = Coins.builder()
                 .quantity(coinsSpended)
                 .prize(request.getPrizeId())
@@ -109,7 +146,7 @@ public class CoinsService implements ICoinsService {
                 .active(true)
                 .updatable(true)
                 .match(null)
-                .clientParty(request.getClientParty())
+                .clientParty(clientParty.getId())
                 .state(this.coinStatesProperties.getInDemand().getName())
                 .build();
 
@@ -197,7 +234,7 @@ public class CoinsService implements ICoinsService {
             coinOrPrize.setState(coinStatesProperties.getDelivered().getName());
             this.coinsRepository.save(coinOrPrize);
 
-            Long partyId = this.coinsRepository.getPartyIdByClient(coinOrPrize.getClientParty());
+            Long partyId = this.clientPartyRepository.getPartyIdByClientParty(coinOrPrize.getClientParty());
 
             return ResponseEntity.ok(new GenericRsDTO(null, CoinStateResponsesEnum.SUCCESSFULLY_DELIVERED.getMessage(), partyId));
         }catch (Exception e){
@@ -227,7 +264,7 @@ public class CoinsService implements ICoinsService {
 
             this.createAdjustment(coinOrPrize);
 
-            Long partyId = this.coinsRepository.getPartyIdByClient(coinOrPrize.getClientParty());
+            Long partyId = this.clientPartyRepository.getPartyIdByClientParty(coinOrPrize.getClientParty());
 
             return ResponseEntity.ok(new GenericRsDTO<>(null, CoinStateResponsesEnum.SUCCESSFULLY_CANCELED.getMessage(),partyId));
         }catch (Exception e){
@@ -257,7 +294,7 @@ public class CoinsService implements ICoinsService {
             this.createAdjustment(coinOrPrize);
             coinOrPrize.setUpdatable(false);
             this.coinsRepository.save(coinOrPrize);
-            Long partyId = this.coinsRepository.getPartyIdByClient(coinOrPrize.getClientParty());
+            Long partyId = this.clientPartyRepository.getPartyIdByClientParty(coinOrPrize.getClientParty());
 
             return ResponseEntity.ok(new GenericRsDTO(null, CoinStateResponsesEnum.SUCCESSFULLY_ADJUSTED.getMessage(),partyId));
         }catch (Exception e){
