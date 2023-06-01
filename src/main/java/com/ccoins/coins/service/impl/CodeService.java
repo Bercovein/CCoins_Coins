@@ -38,19 +38,20 @@ public class CodeService implements ICodeService {
     private final ICoinsRepository coinsRepository;
     private final ICodesRepository codesRepository;
     private final CoinStatesProperties coinStatesProperties;
-
-    @Value("${code.expiration}")
-    private Long codeExpiration;
-
-    @Value("${code.length}")
-    private int codeLength;
+    private final Long codeExpiration;
+    private final int codeLength;
 
     @Autowired
-    public CodeService(IMatchRepository matchRepository, ICoinsRepository coinsRepository, ICodesRepository codesRepository, CoinStatesProperties coinStatesProperties) {
+    public CodeService(@Value("${code.expiration}") Long codeExpiration,
+                       @Value("${code.length}") int codeLength,
+                        IMatchRepository matchRepository, ICoinsRepository coinsRepository,
+                       ICodesRepository codesRepository, CoinStatesProperties coinStatesProperties) {
         this.matchRepository = matchRepository;
         this.coinsRepository = coinsRepository;
         this.codesRepository = codesRepository;
         this.coinStatesProperties = coinStatesProperties;
+        this.codeExpiration = codeExpiration;
+        this.codeLength = codeLength;
     }
 
     @Override
@@ -116,7 +117,7 @@ public class CodeService implements ICodeService {
     }
 
     @Override
-    public ResponseEntity<CodeDTO> ínvalidateCode(StringDTO request) {
+    public ResponseEntity<CodeDTO> invalidateCode(StringDTO request) {
         Code code;
 
         try {

@@ -23,7 +23,7 @@ public class CodesController {
 
     @PutMapping("/invalidate")
     public ResponseEntity<CodeDTO> invalidateCode(@RequestBody @Valid StringDTO request){
-        return this.service.ínvalidateCode(request);
+        return this.service.invalidateCode(request);
     }
 
     @GetMapping("/game/{id}/{state}")

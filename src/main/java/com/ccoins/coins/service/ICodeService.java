@@ -9,7 +9,7 @@ public interface ICodeService {
 
     ResponseEntity<List<CodeDTO>> createCodesByGameBarId(CodeRqDTO request);
 
-    ResponseEntity<CodeDTO> ínvalidateCode(StringDTO request);
+    ResponseEntity<CodeDTO> invalidateCode(StringDTO request);
 
     ResponseEntity<List<CodeDTO>> getByActive(Long id, String state);
 

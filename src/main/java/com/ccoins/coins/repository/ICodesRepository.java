@@ -19,7 +19,8 @@ public interface ICodesRepository extends JpaRepository<Code, Long> {
             " where  " +
             " g.id = :id " +
             " and m.active is true  " +
-            " and (m.end_date > now() or m.end_date is null)", nativeQuery = true)
+            " and (m.end_date > now() or m.end_date is null)" +
+            " order by m.start_date desc", nativeQuery = true)
     List<Code> findActiveCodesByGameBar(@Param("id") Long game);
 
     @Query(value = "SELECT c.*, m.* FROM codes c " +
@@ -28,7 +29,8 @@ public interface ICodesRepository extends JpaRepository<Code, Long> {
             " where  " +
             " g.id = :id " +
             " and (m.active is false " +
-            " or m.end_date < now())", nativeQuery = true)
+            " or m.end_date < now())" +
+            " order by m.start_date desc", nativeQuery = true)
     List<Code> findInactiveCodesByGameBar(@Param("id") Long game);
 
     Optional<Code> findByMatch(Long id);
