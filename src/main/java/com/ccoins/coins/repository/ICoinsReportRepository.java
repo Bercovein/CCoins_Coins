@@ -23,6 +23,6 @@ public interface ICoinsReportRepository extends JpaRepository<CoinsReport, Long>
     @Query(value = EXPENDED_COINS_REPORT + " and c.state <> 'Revertido' " + ORDER_BY_DATE, nativeQuery = true)
     List<CoinsReport> getAllExpendedCoinsFromParty(@Param("partyId") Long partyId);
 
-    @Query(value = EXPENDED_COINS_REPORT + " and c.state == 'Revertido' " + ORDER_BY_DATE, nativeQuery = true)
+    @Query(value = EXPENDED_COINS_REPORT + " and c.state = 'Revertido' " + ORDER_BY_DATE, nativeQuery = true)
     List<CoinsReport> getAllRevertedCoinsFromParty(@Param("partyId") Long partyId);
 }
