@@ -169,18 +169,19 @@ public class CoinsService implements ICoinsService {
         try {
 
             if (type != null && !type.isEmpty()){
-                if (CoinsReportEnum.ACQUIRED.getValue().equals(type))
+                if (CoinsReportEnum.ACQUIRED.getValue().equals(type)) {
                     report = this.coinsReportRepository.getAllAcquiredCoinsFromParty(id);
+                    List<CoinsReport> revertedList = this.coinsReportRepository.getAllRevertedCoinsFromParty(id);
+                    report.addAll(revertedList);
 
+                    report.sort((obj1, obj2) -> obj2.getDate().compareTo(obj1.getDate()));
+                }
                 if (CoinsReportEnum.EXPENDED.getValue().equals(type))
                     report = this.coinsReportRepository.getAllExpendedCoinsFromParty(id);
             }
             else{
                 report = this.coinsReportRepository.getAllCoinsFromParty(id);
             }
-
-            report.removeIf(crs -> !crs.isUpdatable() && this.coinStatesProperties.getDelivered().getName().equals(crs.getState()));
-
         }catch (Exception e){
             throw new BadRequestException(ExceptionConstant.COINS_REPORT_ERROR_CODE,
                     this.getClass(), ExceptionConstant.COINS_REPORT_ERROR);
