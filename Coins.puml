@@ -1,14 +1,58 @@
 @startuml
+class CoinsReport {
+}
+class CodesController {
+}
+class CoinsReportStates {
+}
+interface ICodeService {
+}
+interface ICoinsReportByStateRepository {
+}
+class CodeService {
+}
+interface ICoinsRepository {
+}
+interface ICoinsReportRepository {
+}
+class VoteService {
+}
+interface ICodesRepository {
+}
+interface IMatchRepository {
+}
 class CoinsController {
 }
 class CoinsService {
 }
 interface ICoinsService {
 }
-interface ICoinsRepository {
+class VoteController {
+}
+interface IVoteService {
+}
+interface IClientPartyRepository {
+}
+class MatchesController {
+}
+interface IVotingRepository {
+}
+interface ISongRepository {
+}
+interface IVoteRepository {
 }
 
 
-ICoinsService <|.. CoinsService
+JpaRepository <|-- ICoinsReportByStateRepository
+ICodeService <|.. CodeService
 JpaRepository <|-- ICoinsRepository
+JpaRepository <|-- ICoinsReportRepository
+IVoteService <|.. VoteService
+JpaRepository <|-- ICodesRepository
+JpaRepository <|-- IMatchRepository
+ICoinsService <|.. CoinsService
+JpaRepository <|-- IClientPartyRepository
+JpaRepository <|-- IVotingRepository
+JpaRepository <|-- ISongRepository
+JpaRepository <|-- IVoteRepository
 @enduml
