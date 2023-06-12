@@ -236,6 +236,11 @@ public class CodeService implements ICodeService {
 
         coins = this.coinsRepository.save(coins);
 
+        //cierra la match para que no se use el code si es de un solo uso
+        if(code.isOneUse()) {
+            match.setActive(false);
+            this.matchRepository.save(match);
+        }
         CoinsDTO response = MapperUtils.map(coins,CoinsDTO.class);
 
         return ResponseEntity.ok(new GenericRsDTO(RedeemCodeResponsesEnum.SUCCESS.getCode(),
