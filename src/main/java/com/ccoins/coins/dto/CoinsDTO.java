@@ -19,6 +19,7 @@ public class CoinsDTO {
     private boolean active;
     private Long clientParty;
     private String state;
+    private Long prize;
     private boolean updatable;
 
 }
