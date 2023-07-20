@@ -2,7 +2,7 @@ package com.ccoins.coins.repository.query;
 
 public class CoinsReportStates {
     
-    public static final String STATE_COINS_REPORT = "select ID, START_DATE, TABLE_NUMBER, NAME, STATE, UPDATABLE " +
+    public static final String STATE_COINS_REPORT = "select ID, START_DATE, TABLE_NUMBER, PARTY_NAME, NAME, STATE, UPDATABLE " +
             "from (select c.id as ID, c.start_date as START_DATE, bt.number as TABLE_NUMBER, p.name as PARTY_NAME, pr.name as NAME, c.state AS STATE, c.updatable AS UPDATABLE " +
             "from coins c " +
             "inner join clients_parties cp on cp.id = c.FK_CLIENT_PARTY " +
